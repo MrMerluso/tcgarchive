@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "626568890715",
+    "project_id": "tcg-archive-eee12",
+    "storage_bucket": "tcg-archive-eee12.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:626568890715:android:60e3f11cf562a5aa2e327e",
+        "android_client_info": {
+          "package_name": "com.example.tcgarchive"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgz3eoFsS8cEJdWhailR6To4L05sKm2dw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
