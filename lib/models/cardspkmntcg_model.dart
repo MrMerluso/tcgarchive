@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 
 class CardspkmntcgModel {
   
@@ -25,7 +24,7 @@ class CardspkmntcgModel {
     required this.imageUrl,
   });
 
-  toJson(){
+  Map<String, dynamic> toFirestore(){
     return{
       "Nombre": cardName,
       "Texto": cardText,
@@ -49,7 +48,7 @@ class CardspkmntcgModel {
       cardRarity: data["Rareza"], 
       cardExpansion: data["Expansion"], 
       imageUrl: data["Imagen"],
-    );
+    ); 
   }
 
 }
