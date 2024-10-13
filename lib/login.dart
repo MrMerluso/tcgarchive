@@ -127,7 +127,7 @@ class LoginPage extends StatelessWidget {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12.0),
                             ),
-                            backgroundColor: Color(0xFF104E75),
+                            backgroundColor: const Color(0xFF104E75),
                           ),
                           onPressed: () {
                             // Acción de inicio de sesión
