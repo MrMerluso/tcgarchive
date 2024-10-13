@@ -21,8 +21,31 @@ class TCGApp extends StatelessWidget {
   }
 }
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void _onLogin() {
+    String username = _usernameController.text;
+    String password = _passwordController.text;
+
+    print('Username: $username');
+    print('Password: $password');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +94,7 @@ class LoginPage extends StatelessWidget {
                     children: [
                       // Username Field
                       TextField(
+                        controller: _usernameController,
                         decoration: InputDecoration(
                           prefixIcon: const Icon(Icons.person),
                           hintText: 'Username',
@@ -84,6 +108,7 @@ class LoginPage extends StatelessWidget {
                       const SizedBox(height: 20),
                       // Password Field
                       TextField(
+                        controller: _passwordController,
                         decoration: InputDecoration(
                           prefixIcon: const Icon(Icons.lock),
                           hintText: 'Password',
@@ -129,9 +154,7 @@ class LoginPage extends StatelessWidget {
                             ),
                             backgroundColor: const Color(0xFF104E75),
                           ),
-                          onPressed: () {
-                            // Acción de inicio de sesión
-                          },
+                          onPressed: _onLogin,
                           child: const Text(
                             'Login',
                             style: TextStyle(fontSize: 18, color: Colors.white),
