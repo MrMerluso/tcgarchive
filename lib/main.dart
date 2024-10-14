@@ -38,10 +38,12 @@ class MainApp extends StatelessWidget {
     List<String> cards = List.from(["JBWaheB0DjCLCKqLiRhZ", "SVqKzyFkJNMMjtPAeEkG"]);
     // _foldersController.addCardsToFolder(cards, "iRsZN1ZERBP4VJyUZMN5");
     // _foldersController.addCardToFolder("JBWaheB0DjCLCKqLiRhZ", "iRsZN1ZERBP4VJyUZMN5", 4);
-    _foldersController.getCardsFromFolder("iRsZN1ZERBP4VJyUZMN5");
+    // _foldersController.getCardsFromFolder("iRsZN1ZERBP4VJyUZMN5");
+    // _foldersController.updateCardInFolder("JBWaheB0DjCLCKqLiRhZ", "iRsZN1ZERBP4VJyUZMN5", 8);
 
     final CardsController _cardsController = CardsController();
     // _cardsController.getPkmCards();
+
 
     return const MaterialApp(
       home: Scaffold(

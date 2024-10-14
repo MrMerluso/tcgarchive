@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class CardsmylModel {
   
   final String? id;
@@ -22,7 +24,7 @@ class CardsmylModel {
     required this.imageUrl,
   });
 
-  toJson(){
+  Map<String, dynamic> toFirestore(){
     return{
       "Nombre": cardName,
       "Expansion": cardExpansion,
@@ -33,5 +35,20 @@ class CardsmylModel {
       "Fuerza": cardStr,
       "Imagen": imageUrl,
     };
+  }
+
+  factory CardsmylModel.fromSnapshot(DocumentSnapshot doc){
+    Map<String, dynamic>  data = doc.data() as Map<String, dynamic>;
+    return CardsmylModel(
+      id: doc.id,
+      cardName: data["Nombre"], 
+      cardExpansion: data["Expansion"],
+      cardType: data["Tipo"], 
+      cardRace: data["Raza"],
+      cardFrequency: data["Frecuencia"],
+      cardCost: data["Coste"],
+      cardStr: data["Fuerza"],
+      imageUrl: data["Imagen"],
+    ); 
   }
 }
