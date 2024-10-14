@@ -142,19 +142,27 @@ void _viewCards(int index) {
                   child: Card(
                     color: Color(0xFFEBEEF2),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
+                      borderRadius: BorderRadius.circular(20),
                     ),
                     elevation: 3,
                     child: Column(
                       children: [
                         Expanded(
                           child: Center(
-                            child: Icon(Icons.folder, size: 100, color: Color(0xFF6194B8)),
+                            child: Image.asset(
+                              'images/Logo-MyL.png',
+                              fit: BoxFit.cover,
+                              //scale: 1.5,
+                            ),
                           ),
                         ),
                         Container(
-                          color: Color(0xFF6194B8),
+                          
                           width: double.infinity,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Color(0xFF6194B8),),
+                          
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
                             folders[index]['name'], // Mostrar el nombre de la carpeta
