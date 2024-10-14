@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class CardsopcgModel {
   
   final String? id;
@@ -18,7 +20,7 @@ class CardsopcgModel {
     required this.imageUrl,
   });
 
-  toJson(){
+  Map<String, dynamic> toFirestore(){
     return{
       "Nombre":       cardName,
       "Expansion":    cardExpansion,
@@ -27,5 +29,18 @@ class CardsopcgModel {
       "Ilustracion":  cardIllustration,
       "Imagen": imageUrl
     };
+  }
+
+  factory CardsopcgModel.fromSnapshot(DocumentSnapshot doc){
+    Map<String, dynamic>  data = doc.data() as Map<String, dynamic>;
+    return CardsopcgModel(
+      id: doc.id,
+      cardName: data["Nombre"], 
+      cardExpansion: data["Expansion"],
+      cardColor: data["Color"],
+      cardType: data["Tipo"], 
+      cardIllustration: data["Ilustracion"],
+      imageUrl: data["Imagen"],
+    ); 
   }
 }
