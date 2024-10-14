@@ -98,122 +98,124 @@ class _CardScreenState extends State<CardScreen> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          child: Container(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(card['name'], style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                    IconButton(
-                      icon: Icon(Icons.close),
-                      onPressed: () {
-                        Navigator.of(context).pop(); // Cerrar el diálogo
+          child: SingleChildScrollView(
+            child: Container(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(card['name'], style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                      IconButton(
+                        icon: Icon(Icons.close),
+                        onPressed: () {
+                          Navigator.of(context).pop(); // Cerrar el diálogo
                         // Aquí podrías abrir un diálogo para editar el nombre de la carta
-                      },
-                    ),
-                  ],
-                ),
-                // Aquí mostrarías la imagen grande de la carta
-                Container(
-                  height: 500, // Tamaño de la imagen ampliada
-                  color: Colors.grey[300], // Placeholder de la imagen
-                  child: Image.asset(
-                    'images/zagreus.jpg', // Imagen de la carta
-                    fit: BoxFit.cover,
-                  )
-                ),
-                SizedBox(height: 20),
-                // Campos para editar el precio y las copias con etiquetas
-                Row(
-                  children: [
-                    Expanded(child: Text('Precio:')),
-                    Expanded(
-                      child: TextField(
-                        controller: cardPriceController,
-                        decoration: InputDecoration(hintText: 'Precio de la carta'),
-                        keyboardType: TextInputType.number,
+                        },
                       ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 10),
-                // Incremento/Decremento de la cantidad de copias
-                Row(
-                  children: [
-                    Expanded(child: Text('Cantidad:')),
-                    IconButton(
-                      icon: Icon(Icons.remove),
-                      onPressed: () {
-                        setState(() {
-                          int currentCopies = int.tryParse(cardCopiesController.text) ?? 0;
-                          if (currentCopies > 0) {
-                            cardCopiesController.text = (currentCopies - 1).toString();
-                          }
-                        });
-                      },
-                    ),
-                    Container(
-                      width: 50, // Ancho del campo de texto para la cantidad
-                      child: TextField(
-                        controller: cardCopiesController,
-                        keyboardType: TextInputType.number,
-                        textAlign: TextAlign.center, // Centramos el número
+                    ],
+                  ),
+                  // Aquí mostrarías la imagen grande de la carta
+                  Container(
+                    height: 500, // Tamaño de la imagen ampliada
+                    color: Colors.grey[300], // Placeholder de la imagen
+                    child: Image.asset(
+                      'images/zagreus.jpg', // Imagen de la carta
+                      fit: BoxFit.cover,
+                    )
+                  ),
+                  SizedBox(height: 20),
+                  // Campos para editar el precio y las copias con etiquetas
+                  Row(
+                    children: [
+                      Expanded(child: Text('Precio:')),
+                      Expanded(
+                        child: TextField(
+                          controller: cardPriceController,
+                          decoration: InputDecoration(hintText: 'Precio de la carta'),
+                          keyboardType: TextInputType.number,
+                        ),
                       ),
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.add),
-                      onPressed: () {
-                        setState(() {
-                          int currentCopies = int.tryParse(cardCopiesController.text) ?? 0;
-                          cardCopiesController.text = (currentCopies + 1).toString();
-                        });
-                      },
-                    ),
-                  ],
-                ),
-                SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    TextButton(
-                      child: Text('Eliminar', style: TextStyle(color: Colors.red)),
-                      onPressed: () {
-                        setState(() {
-                          widget.cards.removeAt(index);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Carta eliminada', style: TextStyle(color: Colors.white)),
-                              backgroundColor: Colors.red,
-                           ),
-                          ); // Eliminar la carta
-                        });
-                        Navigator.of(context).pop(); // Cerrar el diálogo
-                      },
-                    ),
-                    TextButton(
-                      child: Text('Guardar'),
-                      onPressed: () {
-                        setState(() {
-                          card['price'] = double.tryParse(cardPriceController.text) ?? 0.0;
-                          card['copies'] = int.tryParse(cardCopiesController.text) ?? 0;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Cambios guardados', style: TextStyle(color: Colors.white)),
-                              backgroundColor: Colors.green,
-                           ),
-                          );
-                        });
-                        Navigator.of(context).pop(); // Guardar cambios y cerrar el diálogo
-                      },
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  // Incremento/Decremento de la cantidad de copias
+                  Row(
+                    children: [
+                      Expanded(child: Text('Cantidad:')),
+                      IconButton(
+                        icon: Icon(Icons.remove),
+                        onPressed: () {
+                          setState(() {
+                            int currentCopies = int.tryParse(cardCopiesController.text) ?? 0;
+                            if (currentCopies > 0) {
+                              cardCopiesController.text = (currentCopies - 1).toString();
+                            }
+                          });
+                        },
+                      ),
+                      Container(
+                        width: 50, // Ancho del campo de texto para la cantidad
+                        child: TextField(
+                          controller: cardCopiesController,
+                          keyboardType: TextInputType.number,
+                          textAlign: TextAlign.center, // Centramos el número
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.add),
+                        onPressed: () {
+                          setState(() {
+                            int currentCopies = int.tryParse(cardCopiesController.text) ?? 0;
+                            cardCopiesController.text = (currentCopies + 1).toString();
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      TextButton(
+                        child: Text('Eliminar', style: TextStyle(color: Colors.red)),
+                        onPressed: () {
+                          setState(() {
+                            widget.cards.removeAt(index);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Carta eliminada', style: TextStyle(color: Colors.white)),
+                                backgroundColor: Colors.red,
+                            ),
+                            ); // Eliminar la carta
+                          });
+                          Navigator.of(context).pop(); // Cerrar el diálogo
+                        },
+                      ),
+                      TextButton(
+                        child: Text('Guardar'),
+                        onPressed: () {
+                          setState(() {
+                            card['price'] = double.tryParse(cardPriceController.text) ?? 0.0;
+                            card['copies'] = int.tryParse(cardCopiesController.text) ?? 0;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Cambios guardados', style: TextStyle(color: Colors.white)),
+                                backgroundColor: Colors.green,
+                            ),
+                            );
+                          });
+                          Navigator.of(context).pop(); // Guardar cambios y cerrar el diálogo
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
+          )
         );
       },
     );
