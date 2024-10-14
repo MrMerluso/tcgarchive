@@ -113,7 +113,9 @@ class FoldersController {
     final cards = querySnapshot.docs.map((doc) => CardInFolder.fromSnapshot(doc)).toList();
 
     print("ALKÑDSJFGLÑKJASJDÑHGAJNA{LSDJFPUIQEA{OIGJA{ON<HB{ÓIHRGE}[>aNO{E+HGN}{+<OIEHNRG}]}}}");
-    print(cards[0].cantidad);
+    print(cards[0].card);
+
+    
     
   }
 

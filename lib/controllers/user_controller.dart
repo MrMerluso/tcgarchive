@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:tcgarchive/models/user_model.dart';
 
 
@@ -18,19 +19,26 @@ class UserController {
     await _db.collection("users").doc(_auth.currentUser?.uid).set(user.toFirestore());
   }
 
-  Future<void> loginWithUsername(String username, String password) async{
+  Future<bool> loginWithUsername(String username, String password) async{
 
     final userSnapshot = await _db.collection("users").where("Nombre", isEqualTo: username).get();
     DocumentSnapshot userDoc = userSnapshot.docs.first;
 
-    await _auth.signInWithEmailAndPassword(
-      email: userDoc["Correo"], 
-      password: password
-    );
+    try {
+      await _auth.signInWithEmailAndPassword(
+        email: userDoc["Correo"], 
+        password: password
+      );
+    } catch (e) {
+      print("error al iniciar sesion");
+      return false;
+    }
+    
 
     final userId = _auth.currentUser?.email;
 
     print("el usuario actual es $userId");
+    return true;
   }
 
 }

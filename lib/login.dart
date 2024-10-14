@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:tcgarchive/controllers/user_controller.dart';
+import 'package:tcgarchive/registration.dart';
 
 void main() {
   runApp(const TCGApp());
@@ -32,6 +34,8 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  final UserController _userController = UserController();
+
   @override
   void dispose() {
     _usernameController.dispose();
@@ -39,9 +43,20 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  void _onLogin() {
+  void _onLogin() async {
     String username = _usernameController.text;
     String password = _passwordController.text;
+
+    bool loginexito = await _userController.loginWithUsername(username, password);
+
+    if (!loginexito) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Usuario o contraseña incorrectos'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
 
     print('Username: $username');
     print('Password: $password');
@@ -124,26 +139,26 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         const SizedBox(height: 10),
                         // Remember Me and Forgot Password
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Checkbox(
-                                  value: false,
-                                  onChanged: (newValue) {},
-                                ),
-                                const Text('Remember Me'),
-                              ],
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                // Acción para "Forgot Password?"
-                              },
-                              child: const Text('Forgot Password?'),
-                            ),
-                          ],
-                        ),
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //   children: [
+                        //     Row(
+                        //       children: [
+                        //         Checkbox(
+                        //           value: false,
+                        //           onChanged: (newValue) {},
+                        //         ),
+                        //         const Text('Remember Me'),
+                        //       ],
+                        //     ),
+                        //     TextButton(
+                        //       onPressed: () {
+                        //         // Acción para "Forgot Password?"
+                        //       },
+                        //       child: const Text('Forgot Password?'),
+                        //     ),
+                        //   ],
+                        // ),
                         const SizedBox(height: 20),
                         // Login Button
                         SizedBox(
@@ -172,6 +187,12 @@ class _LoginPageState extends State<LoginPage> {
                             TextButton(
                               onPressed: () {
                                 // Acción para crear una cuenta
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => SignUpScreen(),
+                                  ),
+                                );
                               },
                               child: const Text('Create an account'),
                             ),

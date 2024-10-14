@@ -1,23 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:tcgarchive/controllers/user_controller.dart';
+import 'package:tcgarchive/login.dart';
+import 'package:tcgarchive/models/user_model.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+// void main() {
+//   runApp(const MyApp());
+// }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+// class MyApp extends StatelessWidget {
+//   const MyApp({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        useMaterial3: true, // Activa Material Design 3.0
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF104E75)),
-      ),
-      home: const SignUpScreen(),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       theme: ThemeData(
+//         useMaterial3: true, // Activa Material Design 3.0
+//         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF104E75)),
+//       ),
+//       home: const SignUpScreen(),
+//     );
+//   }
+// }
 
 
 class SignUpScreen extends StatefulWidget {
@@ -34,6 +37,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _repeatPasswordController = TextEditingController();
+
+  final UserController _userController = UserController();
 
   bool _passwordVisible = false; // Estado para la visibilidad de la contraseña
   bool _repeatPasswordVisible = false; // Estado para la visibilidad de la repetición de contraseña
@@ -66,6 +71,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
       String email = _emailController.text;
       String username = _usernameController.text;
 
+      UserModel user = UserModel(
+        email: email,
+        usernName: username,
+      );
+
+      _userController.createUserInFirestore(user, password);
+
       // Aquí puedes hacer la validación o procesamiento con las variables obtenidas
       print('Email: $email');
       print('Username: $username');
@@ -78,6 +90,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
           backgroundColor: Colors.green,
         ),
       );
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TCGApp(),
+        ),
+      );
+
     }
   }
 
@@ -94,16 +114,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
           icon: const Icon(Icons.arrow_back, color: Color(0xFFEBEEF2),),
           onPressed: () {
             // Acción para retroceder
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => TCGApp(),
+              ),
+            );
           },
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.menu, color: Color(0xFFEBEEF2),),
-            onPressed: () {
-              // Acción para el menú
-            },
-          ),
-        ],
+        
       ),
       body: SafeArea(
         child: SingleChildScrollView(
