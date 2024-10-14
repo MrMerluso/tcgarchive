@@ -4,9 +4,14 @@ import 'package:flutter/material.dart';
 
 class SelectTcgScreen extends StatelessWidget {
   final List<String> tcgOptions = [
-    'Pokémon',
+    'JCC Pokemon',
     'Mitos y Leyendas',
-    'Magic: The Gathering',
+    'One Piece CG',
+  ];
+  final List<String> tcgImages = [
+    'images/Logo-JCCPkmn.png',
+    'images/Logo-MyL.png',
+    'images/Logo-OPCG.png',
   ];
 
   Future<String?> _showFolderNameDialog(BuildContext context, String tcgName) {
@@ -45,6 +50,7 @@ class SelectTcgScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text('Seleccionar TCG', style: TextStyle(color: Color(0xFFEBEEF2), fontWeight: FontWeight.bold)),
         backgroundColor: const Color(0xFF104E75),
       ),
@@ -55,7 +61,7 @@ class SelectTcgScreen extends StatelessWidget {
             crossAxisCount: 1,
             childAspectRatio: 2,
             crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
+            mainAxisSpacing: 50,
           ),
           itemCount: tcgOptions.length,
           itemBuilder: (context, index) {
@@ -67,7 +73,7 @@ class SelectTcgScreen extends StatelessWidget {
                 }
               },
               child: Card(
-                color: Color(0xFF6194B8), // Color de fondo para los TCGs
+                color: Color(0xFFEBEEF2),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15),
                 ),
@@ -75,14 +81,11 @@ class SelectTcgScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     Expanded(
-                      child: Container(
-                        color: Colors.grey[300], // Cambia esto por la imagen más adelante
-                        child: Center(
-                          child: Text(
-                            'Imagen', // Reemplaza con una imagen real más adelante
-                            style: TextStyle(fontSize: 20),
-                          ),
-                        ),
+                      child: Center(
+                        child: Image.asset(
+                          tcgImages[index],
+                          fit: BoxFit.cover,
+                        )
                       ),
                     ),
                     Container(
@@ -91,7 +94,7 @@ class SelectTcgScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
                         tcgOptions[index],
-                        style: TextStyle(color: Colors.white, fontSize: 18),
+                        style: TextStyle(color: Colors.white, fontSize: 26),
                         textAlign: TextAlign.center,
                       ),
                     ),
