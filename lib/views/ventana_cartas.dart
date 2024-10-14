@@ -1,4 +1,5 @@
 // ignore_for_file: prefer_const_constructors
+import 'package:flutter/services.dart';
 
 import 'package:flutter/material.dart';
 
@@ -218,6 +219,10 @@ class _CardScreenState extends State<CardScreen> {
     );
   }
 
+  void copiarAlPortapapeles(String texto) {
+  Clipboard.setData(ClipboardData(text: texto));
+}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -226,6 +231,7 @@ class _CardScreenState extends State<CardScreen> {
           IconButton(
             icon: Icon(Icons.share),
               onPressed: () {
+                copiarAlPortapapeles("id de la base de datos");
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                   backgroundColor: Colors.green,
