@@ -50,6 +50,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true, // Permitir que el cuerpo se ajuste al teclado
       body: Stack(
         children: [
           // Rectángulo azul ocupando 1/4 de la pantalla (debajo)
@@ -89,93 +90,95 @@ class _LoginPageState extends State<LoginPage> {
                 child: Container(
                   width: 400,
                   padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // Username Field
-                      TextField(
-                        controller: _usernameController,
-                        decoration: InputDecoration(
-                          prefixIcon: const Icon(Icons.person),
-                          hintText: 'Username',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12.0),
-                          ),
-                          filled: true,
-                          fillColor: Colors.white,
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      // Password Field
-                      TextField(
-                        controller: _passwordController,
-                        decoration: InputDecoration(
-                          prefixIcon: const Icon(Icons.lock),
-                          hintText: 'Password',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12.0),
-                          ),
-                          filled: true,
-                          fillColor: Colors.white,
-                        ),
-                        obscureText: true,
-                      ),
-                      const SizedBox(height: 10),
-                      // Remember Me and Forgot Password
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Checkbox(
-                                value: false,
-                                onChanged: (newValue) {},
-                              ),
-                              const Text('Remember Me'),
-                            ],
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              // Acción para "Forgot Password?"
-                            },
-                            child: const Text('Forgot Password?'),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-                      // Login Button
-                      SizedBox(
-                        width: double.infinity,
-                        height: 50,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Username Field
+                        TextField(
+                          controller: _usernameController,
+                          decoration: InputDecoration(
+                            prefixIcon: const Icon(Icons.person),
+                            hintText: 'Username',
+                            border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12.0),
                             ),
-                            backgroundColor: const Color(0xFF104E75),
-                          ),
-                          onPressed: _onLogin,
-                          child: const Text(
-                            'Login',
-                            style: TextStyle(fontSize: 18, color: Colors.white),
+                            filled: true,
+                            fillColor: Colors.white,
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 20),
-                      // Create Account Link
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text("Don't have an account? "),
-                          TextButton(
-                            onPressed: () {
-                              // Acción para crear una cuenta
-                            },
-                            child: const Text('Create an account'),
+                        const SizedBox(height: 20),
+                        // Password Field
+                        TextField(
+                          controller: _passwordController,
+                          decoration: InputDecoration(
+                            prefixIcon: const Icon(Icons.lock),
+                            hintText: 'Password',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                            filled: true,
+                            fillColor: Colors.white,
                           ),
-                        ],
-                      ),
-                    ],
+                          obscureText: true,
+                        ),
+                        const SizedBox(height: 10),
+                        // Remember Me and Forgot Password
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Checkbox(
+                                  value: false,
+                                  onChanged: (newValue) {},
+                                ),
+                                const Text('Remember Me'),
+                              ],
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                // Acción para "Forgot Password?"
+                              },
+                              child: const Text('Forgot Password?'),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        // Login Button
+                        SizedBox(
+                          width: double.infinity,
+                          height: 50,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                              backgroundColor: const Color(0xFF104E75),
+                            ),
+                            onPressed: _onLogin,
+                            child: const Text(
+                              'Login',
+                              style: TextStyle(fontSize: 18, color: Colors.white),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        // Create Account Link
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text("Don't have an account? "),
+                            TextButton(
+                              onPressed: () {
+                                // Acción para crear una cuenta
+                              },
+                              child: const Text('Create an account'),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -183,7 +186,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
           // Logo colocado en el rectángulo blanco, sobre la tarjeta
           Positioned(
-            top: MediaQuery.of(context).size.height * 0.2, // Ajusta la posición vertical
+            top: MediaQuery.of(context).size.height * 0.2 - (MediaQuery.of(context).viewInsets.bottom > 0 ? 110 : 0), // Ajusta la posición vertical
             left: MediaQuery.of(context).size.width * 0.5 - 125, // Centrar horizontalmente
             child: Image.asset(
               'images/Logo.png', // Coloca aquí la imagen del logo
