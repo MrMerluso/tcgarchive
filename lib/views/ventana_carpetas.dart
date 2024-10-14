@@ -1,0 +1,208 @@
+// ignore_for_file: prefer_const_constructors, must_be_immutable
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'ventana_tcg.dart'; // Asegúrate de importar SelectTcgScreen
+import 'ventana_cartas.dart'; // Asegúrate de importar CardScreen
+
+class HomeScreen extends StatefulWidget {
+  List<Map<String, dynamic>> folders = [];
+
+  HomeScreen({super.key}); // Almacena el nombre de la carpeta y sus cartas
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  // Cambiar a un mapa para almacenar información adicional de cada carpeta
+  String searchQuery = ''; // Búsqueda de carpetas
+
+  List<Map<String, dynamic>> get folders {
+    if (searchQuery.isEmpty) {
+      return widget.folders; // Mostrar todas las carpetas si no hay búsqueda
+    }
+
+    return widget.folders.where((folder) {
+      return folder['name'].toLowerCase().contains(searchQuery.toLowerCase());
+    }).toList();
+  }
+
+  void _createNewFolder() async {
+    final String? newFolderName = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SelectTcgScreen()),
+    );
+    
+    if (newFolderName != null && newFolderName.isNotEmpty) {
+      setState(() {
+        // Inicializa correctamente la lista de cartas como una lista vacía
+        folders.add({'name': newFolderName, 'cards': <Map<String, dynamic>>[]}); 
+      });
+    }
+  }
+
+void _viewCards(int index) {
+  if (folders[index]['name'] != null) {  // Verifica que 'name' no sea null
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CardScreen(
+          folderName: folders[index]['name'] ?? 'Sin Nombre',  // Valor por defecto si es null
+          cards: folders[index]['cards'], // Asegúrate de que 'cards' también exista y sea válido
+        ),
+      ),
+    );
+  }
+}
+
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text('Tus Carpetas', style: TextStyle(color: Color(0xFFEBEEF2), fontWeight: FontWeight.bold)),
+        backgroundColor: const Color(0xFF104E75),
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: Icon(Icons.menu),
+              color: Color(0xFFEBEEF2),
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+            );
+          },
+        ),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            SizedBox(
+              height: 100,
+              child: DrawerHeader(
+                decoration: BoxDecoration(
+                  color: const Color(0xFF104E75),
+                ),
+                child: Text(
+                  'Opciones',
+                  style: TextStyle(
+                    color: Color(0xFFEBEEF2),
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.copy),
+              title: Text('Copiar código carpeta compartida'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.create_new_folder),
+              title: Text('Crear nueva carpeta'),
+              onTap: _createNewFolder, // Llamar a la función de crear carpeta
+            ),
+          ],
+        ),
+      ),
+      body: Column(children: [
+        Padding(padding: const EdgeInsets.all(16.0),
+          child: TextField(
+            decoration: InputDecoration(
+              hintText: 'Buscar carpeta...',
+              prefixIcon: Icon(Icons.search),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10)
+              ),
+            ),
+            onChanged: (query) {
+              setState(() {
+                searchQuery = query;
+              });
+            },
+          ),
+        ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(6.0),
+            child: GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 0.8,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+              ),
+              itemCount: folders.length,
+              itemBuilder: (context, index) {
+                return InkWell(
+                  onTap: () {
+                    _viewCards(index);
+                  },
+                  borderRadius: BorderRadius.circular(20),
+                  splashColor: Color(0xFFEBEEF2),
+                  child: GridTile(
+                    child: Stack(
+                      children: [
+                        Container(
+                          alignment: Alignment.center,
+                          padding: EdgeInsets.only(top: 20, right: 10, bottom: 10, left: 10),
+                          margin: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                          decoration: BoxDecoration(
+                            color: Color(0xFFEBEEF2),
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 2,
+                                blurRadius: 5,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            children: [
+                              Expanded(
+                                child: Image.asset(
+                                  'images/Carpeta-azul/Carpeta-azul-myl.png',
+                                  fit: BoxFit.none,
+                                  scale: 2,
+                                ),
+                              ),
+                              Container(
+                                width: 170,
+                                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  color: Color(0xFF6194B8),
+                                ),
+                                child: Text(
+                                  folders[index]['name'],
+                                    style: TextStyle(
+                                      color: Colors.white, 
+                                      fontSize: 18
+                                    ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+      ]),
+    );
+  }
+}
