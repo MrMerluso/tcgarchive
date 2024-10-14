@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, must_be_immutable
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'ventana_tcg.dart'; // Asegúrate de importar SelectTcgScreen
 import 'ventana_cartas.dart'; // Asegúrate de importar CardScreen
@@ -122,52 +123,75 @@ void _viewCards(int index) {
               ),
             ),
             onChanged: (query) {
+              setState(() {
                 searchQuery = query;
+              });
             },
           ),
         ),
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(6.0),
             child: GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
+                childAspectRatio: 0.8,
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
               ),
               itemCount: folders.length,
               itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () => _viewCards(index), // Navegar a la ventana de cartas
-                  child: Card(
-                    color: Color(0xFFEBEEF2),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    elevation: 3,
-                    child: Column(
+                return InkWell(
+                  onTap: () {
+                    _viewCards(index);
+                  },
+                  borderRadius: BorderRadius.circular(20),
+                  splashColor: Color(0xFFEBEEF2),
+                  child: GridTile(
+                    child: Stack(
                       children: [
-                        Expanded(
-                          child: Center(
-                            child: Image.asset(
-                              'images/Logo-MyL.png',
-                              fit: BoxFit.cover,
-                              //scale: 1.5,
-                            ),
-                          ),
-                        ),
                         Container(
-                          
-                          width: double.infinity,
+                          alignment: Alignment.center,
+                          padding: EdgeInsets.only(top: 20, right: 10, bottom: 10, left: 10),
+                          margin: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                           decoration: BoxDecoration(
+                            color: Color(0xFFEBEEF2),
                             borderRadius: BorderRadius.circular(20),
-                            color: Color(0xFF6194B8),),
-                          
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            folders[index]['name'], // Mostrar el nombre de la carpeta
-                            style: TextStyle(color: Colors.white, fontSize: 18),
-                            textAlign: TextAlign.center,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 2,
+                                blurRadius: 5,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            children: [
+                              Expanded(
+                                child: Image.asset(
+                                  'images/Carpeta-azul/Carpeta-azul-myl.png',
+                                  fit: BoxFit.none,
+                                  scale: 2,
+                                ),
+                              ),
+                              Container(
+                                width: 170,
+                                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  color: Color(0xFF6194B8),
+                                ),
+                                child: Text(
+                                  folders[index]['name'],
+                                    style: TextStyle(
+                                      color: Colors.white, 
+                                      fontSize: 18
+                                    ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
