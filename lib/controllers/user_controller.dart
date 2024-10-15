@@ -22,9 +22,9 @@ class UserController {
   Future<bool> loginWithUsername(String username, String password) async{
 
     final userSnapshot = await _db.collection("users").where("Nombre", isEqualTo: username).get();
-    DocumentSnapshot userDoc = userSnapshot.docs.first;
 
     try {
+      DocumentSnapshot userDoc = userSnapshot.docs.first;
       await _auth.signInWithEmailAndPassword(
         email: userDoc["Correo"], 
         password: password

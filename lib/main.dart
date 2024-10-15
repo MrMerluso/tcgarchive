@@ -1,12 +1,15 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:tcgarchive/controllers/cards_controller.dart';
-import 'package:tcgarchive/controllers/folders_controller.dart';
+import 'package:tcgarchive/carpeta_compartida.dart';
+
 import 'package:tcgarchive/firebase_options.dart';
-import 'package:tcgarchive/controllers/user_controller.dart';
+
 import 'package:tcgarchive/login.dart';
-import 'package:tcgarchive/models/user_model.dart';
+
 import 'package:tcgarchive/registration.dart';
+import 'package:tcgarchive/views/ventana_carpetas.dart';
+import 'package:tcgarchive/views/ventana_cartas.dart';
+import 'package:tcgarchive/views/ventana_tcg.dart';
 
 void main() async {
 
@@ -38,9 +41,11 @@ class MainApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const TCGApp(),
+        '/home': (context) => HomeScreen(),
         '/register': (context) => SignUpScreen(),
-        // '/select-tcg': (context) => SelectTcgScreen(),
-        // '/cards': (context) => const CardScreen(folderName: 'defaultFolder', cards: []), // Nueva ruta para la ventana de cartas
+        '/select-tcg': (context) => SelectTcgScreen(),
+        '/cards': (context) => CardScreen(folderName: 'defaultFolder', cards: [], tcg: 'cardsPkmntcg'), // Nueva ruta para la ventana de cartas
+        '/shared-folder': (context) => SearchFolder(),
       },
     );
 

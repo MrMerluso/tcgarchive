@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tcgarchive/controllers/user_controller.dart';
 import 'package:tcgarchive/registration.dart';
+import 'package:tcgarchive/views/ventana_carpetas.dart';
 
 void main() {
   runApp(const TCGApp());
@@ -56,7 +57,16 @@ class _LoginPageState extends State<LoginPage> {
           backgroundColor: Colors.red,
         ),
       );
+      
+      return;
     }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => HomeScreen(),
+      ),
+    );
 
     print('Username: $username');
     print('Password: $password');

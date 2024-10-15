@@ -13,6 +13,11 @@ class SelectTcgScreen extends StatelessWidget {
     'images/Logo-MyL.png',
     'images/Logo-OPCG.png',
   ];
+  final List<String> tcgName = [
+    'cardsPkmntcg',
+    'cardsMyl',
+    'cardsOpcg',
+  ];
 
   Future<String?> _showFolderNameDialog(BuildContext context, String tcgName) {
     final TextEditingController folderNameController = TextEditingController();
@@ -68,8 +73,12 @@ class SelectTcgScreen extends StatelessWidget {
             return InkWell(
               onTap: () async {
                 String? folderName = await _showFolderNameDialog(context, tcgOptions[index]);
-                if (folderName != null && folderName.isNotEmpty) {
-                  Navigator.pop(context, folderName); // Retorna el nombre de la carpeta
+                String nameIdx = tcgName[index];
+
+                Map<String, dynamic> newFolderDetails = {"folderName": folderName, "nameIdx": nameIdx};
+                
+                if (newFolderDetails != null && newFolderDetails.isNotEmpty) {
+                  Navigator.pop(context, newFolderDetails); // Retorna el nombre de la carpeta
                 }
               },
               child: GridTile(

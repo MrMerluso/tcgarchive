@@ -1,13 +1,19 @@
 // ignore_for_file: prefer_const_constructors
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter/material.dart';
+import 'package:tcgarchive/models/cardsmyl_model.dart';
+import 'package:tcgarchive/models/cardsopcg_model.dart';
+import 'package:tcgarchive/models/cardspkmntcg_model.dart';
 
 class CardScreen extends StatefulWidget {
   final String folderName; // Nombre de la carpeta
-  final List<Map<String, dynamic>> cards; // Lista de cartas para esta carpeta
+  List<Map<String, dynamic>> cards; // Lista de cartas para esta carpeta
+  final String tcg;
+  final String? folderId;
 
-  const CardScreen({super.key, required this.folderName, required this.cards});
+  CardScreen({super.key, required this.folderName, required this.cards, required this.tcg, this.folderId});
 
   @override
   _CardScreenState createState() => _CardScreenState();
@@ -24,6 +30,59 @@ class _CardScreenState extends State<CardScreen> {
     return widget.cards.where((card) {
       return card['name'].toLowerCase().contains(searchQuery.toLowerCase());
     }).toList();
+  }
+
+  set cards (List<Map<String, dynamic>> value) {
+    setState(() {
+      widget.cards = value;
+    });
+  }
+
+
+  Future<void> _fetchCards() async{
+    List<Map<String, dynamic>> newCards = [];
+
+    for (var card in widget.cards) {
+      switch (widget.tcg) {
+        case "cardsPkmntcg":
+          
+          CardspkmntcgModel pkmcard = card["Carta"];
+          newCards.add({
+            'name': pkmcard.cardName,
+            'copies': card["Cantidad"],
+            'price': card["Precio"]
+          });
+          break;
+
+        case "cardsOpcg":
+          
+          CardsopcgModel opcgcard = card["Carta"];
+          newCards.add({
+            'name': opcgcard.cardName,
+            'copies': card["Cantidad"],
+            'price': card["Precio"]
+          });
+          break;
+
+        case "cardsMyl":
+          
+          CardsmylModel mylcard = card["Carta"];
+          newCards.add({
+            'name': mylcard.cardName,
+            'copies': card["Cantidad"],
+            'price': card["Precio"]
+          });
+          break;
+        
+        default:
+          print("doudoudoudoudoudoudoudoudoudoudoudou");
+      }
+
+    }
+
+    cards = newCards;
+
+
   }
 
   void _addCard() async {
@@ -204,7 +263,7 @@ class _CardScreenState extends State<CardScreen> {
                               const SnackBar(
                                 content: Text('Cambios guardados', style: TextStyle(color: Colors.white)),
                                 backgroundColor: Colors.green,
-                            ),
+                              ),
                             );
                           });
                           Navigator.of(context).pop(); // Guardar cambios y cerrar el diálogo
@@ -222,13 +281,20 @@ class _CardScreenState extends State<CardScreen> {
   }
 
   void copiarAlPortapapeles(String texto) {
-  Clipboard.setData(ClipboardData(text: texto));
-}
+    Clipboard.setData(ClipboardData(text: widget.folderId!));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchCards();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: const IconThemeData(color:  Color(0xFFEBEEF2)),
         actions: [
           IconButton(
             icon: Icon(Icons.share),

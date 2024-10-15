@@ -15,39 +15,47 @@ class FoldersController {
  
   Future<List<FoldersModel>> getFoldersFromUser() async {
 
+    DocumentReference userRef = _db.collection("users").doc(_auth.currentUser?.uid);
+
     final snapshot = await _db
       .collection("cardFolders")
-      .where("Creador", isEqualTo: _auth.currentUser?.uid)
+      .where("Creador", isEqualTo: userRef)
       .get();
     
     final userFolders = snapshot.docs.map((doc) => FoldersModel.fromSnapshot(doc)).toList();
     return userFolders;
   }
 
-  Future<void> createFolder(String folderName, String tcg) async {
+  Future<FoldersModel> createFolder(String folderName, String tcg) async {
 
     String createdBy = _auth.currentUser!.uid;
     DocumentReference userRef = _db.collection("users").doc(createdBy);
 
+    DocumentReference doc = _db.collection("cardFolders").doc();
+
     FoldersModel folder = FoldersModel(
+      id: doc.id,
       folderName: folderName, 
       createdBy: userRef, 
       tcg: tcg,
-      cards: List.empty(),
+      cards: List<Map<String, dynamic>>.empty(),
     );
 
-    await _db.collection("cardFolders").add(folder.toFirestore());
+
+    await doc.set(folder.toFirestore());
+
+    return folder;
   }
 
   Future<FoldersModel> getFolderById(String id) async{
-
-    final folderSnapshot = await _db.collection("cardFolders").doc(id).get();
+    print("JAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJ");
+    print(id.trim());
+    final folderSnapshot = await _db.collection("cardFolders").doc(id.trim()).get();
     return FoldersModel.fromSnapshot(folderSnapshot);
   }
 
-/*   // ACTUALIZAR LA CANTIDAD DE CARTAS SI ESTA YA ESTA EN LA LISTA
-  Future<void> addCardToFolder1(String cardId, String folderId, int ammount) async{
 
+  Future<void> addCardToFolder(String cardId, String folderId, int ammount, int price) async{
     if (_auth.currentUser == null) {
       print("no hay usuario autenticado");
       return;
@@ -59,40 +67,7 @@ class FoldersController {
 
     DocumentSnapshot folderSnapshot = await folderRef.get();
 
-    final creador = folderSnapshot["Creador"];
-
-    if (folderSnapshot.exists && folderSnapshot["Creador"] == userRef) {
-
-      DocumentReference cardRef = _db.collection("cardsPkmntcg").doc(cardId);
-      
-
-
-      await folderRef.update({
-        "Cartas": FieldValue.arrayUnion([{
-          "Carta": cardRef,
-          "Cantidad": ammount,
-        }]),
-      });
-    
-    } else {
-      print("No se ha podido añadir la lista de cartas");
-    }
-
-  } */
-
-  Future<void> addCardToFolder(String cardId, String folderId, int ammount) async{
-    if (_auth.currentUser == null) {
-      print("no hay usuario autenticado");
-      return;
-    }
-
-    DocumentReference userRef = _db.collection("users").doc(_auth.currentUser?.uid);
-
-    DocumentReference folderRef = _db.collection("cardFolders").doc(folderId);
-
-    DocumentSnapshot folderSnapshot = await folderRef.get();
-
-    final creador = folderSnapshot["Creador"];
+    // final creador = folderSnapshot["Creador"];
 
     if (folderSnapshot.exists && folderSnapshot["Creador"] == userRef){
       
@@ -100,6 +75,7 @@ class FoldersController {
 
       await folderRef.collection("Cartas").add({
         "Carta": cardRef,
+        "Precio": price,
         "Cantidad": ammount,
       });
     }
@@ -119,7 +95,7 @@ class FoldersController {
     final cardRefs = querySnapshot.docs.map((doc) => CardInFolder.fromSnapshot(doc)).toList();
 
     print("ALKÑDSJFGLÑKJASJDÑHGAJNA{LSDJFPUIQEA{OIGJA{ON<HB{ÓIHRGE}[>aNO{E+HGN}{+<OIEHNRG}]}}}");
-    print(cardRefs[0].cantidad);
+    print(cardRefs);
     
     List<Map<String, dynamic>> cards = List.empty(growable: true);
 
@@ -132,6 +108,7 @@ class FoldersController {
           CardspkmntcgModel pkmcard = CardspkmntcgModel.fromSnapshot(cardSnap);            
           cards.add({
             "Carta": pkmcard,
+            "Precio": card.precio,
             "Cantidad": card.cantidad,
           });
         }
@@ -144,6 +121,7 @@ class FoldersController {
           CardsmylModel mylCard = CardsmylModel.fromSnapshot(cardSnap);            
           cards.add({
             "Carta": mylCard,
+            "Precio": card.precio,
             "Cantidad": card.cantidad,
           });
         }
@@ -156,6 +134,7 @@ class FoldersController {
           CardsopcgModel opcgCard = CardsopcgModel.fromSnapshot(cardSnap);            
           cards.add({
             "Carta": opcgCard,
+            "Precio": card.precio,
             "Cantidad": card.cantidad,
           });
         }
@@ -210,38 +189,4 @@ class FoldersController {
     }
   }
 
-  // Future<void> addCardsToFolder(List<String> cardIDs, String folderId) async {
-
-  //   if (_auth.currentUser == null) {
-  //     print("no hay usuario autenticado");
-  //     return;
-  //   }
-
-  //   DocumentReference userRef = _db.collection("users").doc(_auth.currentUser?.uid);
-
-  //   DocumentReference folderRef = _db.collection("cardFolders").doc(folderId);
-
-  //   DocumentSnapshot folderSnapshot = await folderRef.get();
-
-  //   final creador = folderSnapshot["Creador"];
-
-  //   print("Creador de la carpeta: $creador");
-  //   print("Usuario $userRef");
-    
-  //   if (folderSnapshot.exists && folderSnapshot["Creador"] == userRef) {
-
-  //     List<DocumentReference> cardRefs = List.empty(growable: true);
-  //     for (var card in cardIDs) {
-  //       DocumentReference cardRef = _db.collection("cardsPkmntcg").doc(card);
-  //       cardRefs.add(cardRef);
-  //     }
-
-  //     await folderRef.update({
-  //       "Cartas": FieldValue.arrayUnion(cardRefs),
-  //     });
-    
-  //   } else {
-  //     print("No se ha podido añadir la lista de cartas");
-  //   }
-  // }
 }

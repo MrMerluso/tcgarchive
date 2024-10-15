@@ -1,7 +1,11 @@
 // ignore_for_file: prefer_const_constructors, must_be_immutable
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:flutter/material.dart';
+import 'package:tcgarchive/carpeta_compartida.dart';
+
+import 'package:tcgarchive/controllers/folders_controller.dart';
+import 'package:tcgarchive/models/folders_model.dart';
 import 'ventana_tcg.dart'; // Asegúrate de importar SelectTcgScreen
 import 'ventana_cartas.dart'; // Asegúrate de importar CardScreen
 
@@ -16,6 +20,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   // Cambiar a un mapa para almacenar información adicional de cada carpeta
   String searchQuery = ''; // Búsqueda de carpetas
+  FoldersController _foldersController = FoldersController();
 
   List<Map<String, dynamic>> get folders {
     if (searchQuery.isEmpty) {
@@ -27,44 +32,105 @@ class _HomeScreenState extends State<HomeScreen> {
     }).toList();
   }
 
+  set folders (List<Map<String, dynamic>> value){
+    setState(() {
+      widget.folders = value;
+    });
+  }
+
   void _createNewFolder() async {
-    final String? newFolderName = await Navigator.push(
+    // final String? newFolderName = await Navigator.push(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => SelectTcgScreen()),
+    // );
+
+    final Map<String, dynamic>? newFolderDetails = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => SelectTcgScreen()),
     );
+
+    FoldersModel newFolder = await _foldersController.createFolder(newFolderDetails?["folderName"], newFolderDetails?["nameIdx"]);
     
-    if (newFolderName != null && newFolderName.isNotEmpty) {
+
+    if (newFolder != null) {
       setState(() {
         // Inicializa correctamente la lista de cartas como una lista vacía
-        folders.add({'name': newFolderName, 'cards': <Map<String, dynamic>>[]}); 
+        folders.add({
+          'id': newFolder.id,
+          'name': newFolder.folderName,
+          'createdBy': newFolder.createdBy,
+          'tcg': newFolder.tcg,
+          'cards': <Map<String, dynamic>>[],
+        }); 
       });
     }
   }
 
-void _viewCards(int index) {
-  if (folders[index]['name'] != null) {  // Verifica que 'name' no sea null
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => CardScreen(
-          folderName: folders[index]['name'] ?? 'Sin Nombre',  // Valor por defecto si es null
-          cards: folders[index]['cards'], // Asegúrate de que 'cards' también exista y sea válido
-        ),
-      ),
-    );
+  Future<void> _fectchFolders() async{
+
+    print("WENAWENAWENAWENAWENAWENAWENAWENAWENAWENAWENAWENAWENAWENAWENAWENA");
+
+    List<FoldersModel> fetchedFolders = await _foldersController.getFoldersFromUser();
+    
+    // print(fetchedFolders);
+    List<Map<String, dynamic>> foldersss = [];
+
+    for (var i = 0; i < fetchedFolders.length; i++) {
+      var f = fetchedFolders[i];
+
+      List<Map<String, dynamic>> fetchedCards = await _foldersController.getCardsFromFolder(f.id!);
+
+      foldersss.add({
+        'id': f.id,
+        'name': f.folderName,
+        'createdBy': f.createdBy,
+        'tcg': f.tcg,
+        'cards': fetchedCards, 
+      });
+      
+    }
+
+    
+    folders = foldersss;
+    
+
+    print(folders);
   }
-}
 
+  void _viewCards(int index) {
+    if (folders[index]['name'] != null) {  // Verifica que 'name' no sea null
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CardScreen(
+            folderName: folders[index]['name'] ?? 'Sin Nombre',  // Valor por defecto si es null
+            cards: folders[index]['cards'], // Asegúrate de que 'cards' también exista y sea válido
+            tcg: folders[index]['tcg'],
+            folderId: folders[index]['id'],
+          ),
+        ),
+      );
+    }
+  }
 
+  @override
+  void initState() {
+    super.initState();
+    // _fectchFolders();
+  }
 
 
   @override
   Widget build(BuildContext context) {
+
+    _fectchFolders();
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: const Text('Tus Carpetas', style: TextStyle(color: Color(0xFFEBEEF2), fontWeight: FontWeight.bold)),
         backgroundColor: const Color(0xFF104E75),
+        iconTheme: const IconThemeData(color:  Color(0xFFEBEEF2)),
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
@@ -82,7 +148,7 @@ void _viewCards(int index) {
           padding: EdgeInsets.zero,
           children: <Widget>[
             SizedBox(
-              height: 100,
+              height: 150,
               child: DrawerHeader(
                 decoration: BoxDecoration(
                   color: const Color(0xFF104E75),
@@ -99,9 +165,14 @@ void _viewCards(int index) {
             ),
             ListTile(
               leading: Icon(Icons.copy),
-              title: Text('Copiar código carpeta compartida'),
+              title: Text('Buscar carpeta compartida'),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SearchFolder(),
+                  ),
+                );
               },
             ),
             ListTile(
@@ -170,7 +241,7 @@ void _viewCards(int index) {
                             children: [
                               Expanded(
                                 child: Image.asset(
-                                  'images/Carpeta-azul/Carpeta-azul-myl.png',
+                                  '${'images/Carpeta-azul/Carpeta-azul-'+folders[index]["tcg"]}.png',
                                   fit: BoxFit.none,
                                   scale: 2,
                                 ),

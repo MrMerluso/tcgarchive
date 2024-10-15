@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => HomeScreen(),
         '/select-tcg': (context) => SelectTcgScreen(),
-        '/cards': (context) => const CardScreen(folderName: 'defaultFolder', cards: []), // Nueva ruta para la ventana de cartas
+        '/cards': (context) => CardScreen(folderName: 'defaultFolder', cards: [], tcg: 'cardsPkmntcg'), // Nueva ruta para la ventana de cartas
       },
     );
   }
