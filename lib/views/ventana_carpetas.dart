@@ -49,23 +49,24 @@ class _HomeScreenState extends State<HomeScreen> {
       MaterialPageRoute(builder: (context) => SelectTcgScreen()),
     );
 
-    FoldersModel newFolder = await _foldersController.createFolder(newFolderDetails?["folderName"], newFolderDetails?["nameIdx"]);
-    
-
-    if (newFolder != null) {
-      setState(() {
-        // Inicializa correctamente la lista de cartas como una lista vacía
-        folders.add({
-          'id': newFolder.id,
-          'name': newFolder.folderName,
-          'createdBy': newFolder.createdBy,
-          'tcg': newFolder.tcg,
-          'cards': <Map<String, dynamic>>[],
-        }); 
-      });
+    if (newFolderDetails== null || newFolderDetails["folderName"] == null) {
+      return;
+    } else {
+      FoldersModel newFolder = await _foldersController.createFolder(newFolderDetails["folderName"], newFolderDetails["nameIdx"]);
+      if (newFolder != null) {
+        setState(() {
+          // Inicializa correctamente la lista de cartas como una lista vacía
+          folders.add({
+            'id': newFolder.id,
+            'name': newFolder.folderName,
+            'createdBy': newFolder.createdBy,
+            'tcg': newFolder.tcg,
+            'cards': <Map<String, dynamic>>[],
+          }); 
+        });
+      }
     }
   }
-
   Future<void> _fectchFolders() async{
 
     print("WENAWENAWENAWENAWENAWENAWENAWENAWENAWENAWENAWENAWENAWENAWENAWENA");

@@ -259,12 +259,12 @@ class _CardScreenState extends State<CardScreen> {
                           setState(() {
                             card['price'] = double.tryParse(cardPriceController.text) ?? 0.0;
                             card['copies'] = int.tryParse(cardCopiesController.text) ?? 0;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Cambios guardados', style: TextStyle(color: Colors.white)),
-                                backgroundColor: Colors.green,
-                              ),
-                            );
+                            //ScaffoldMessenger.of(context).showSnackBar(
+                              //const SnackBar(
+                                //content: Text('Cambios guardados', style: TextStyle(color: Colors.white)),
+                                //backgroundColor: Colors.green,
+                              //),
+                            //);
                           });
                           Navigator.of(context).pop(); // Guardar cambios y cerrar el diálogo
                         },

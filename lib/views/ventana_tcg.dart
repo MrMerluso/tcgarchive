@@ -55,6 +55,7 @@ class SelectTcgScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(color: Color(0xFFEBEEF2)),
         centerTitle: true,
         title: Text('Seleccionar TCG', style: TextStyle(color: Color(0xFFEBEEF2), fontWeight: FontWeight.bold)),
         backgroundColor: const Color(0xFF104E75),
