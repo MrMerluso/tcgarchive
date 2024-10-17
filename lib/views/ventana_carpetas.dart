@@ -21,6 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // Cambiar a un mapa para almacenar información adicional de cada carpeta
   String searchQuery = ''; // Búsqueda de carpetas
   FoldersController _foldersController = FoldersController();
+  bool _isLoading = true;
 
   List<Map<String, dynamic>> get folders {
     if (searchQuery.isEmpty) {
@@ -69,7 +70,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
   Future<void> _fectchFolders() async{
 
-    print("WENAWENAWENAWENAWENAWENAWENAWENAWENAWENAWENAWENAWENAWENAWENAWENA");
+    setState(() {
+      _isLoading = true; // Inicia la carga
+    });
+
+    //print("WENAWENAWENAWENAWENAWENAWENAWENAWENAWENAWENAWENAWENAWENAWENAWENA");
 
     List<FoldersModel> fetchedFolders = await _foldersController.getFoldersFromUser();
     
@@ -92,10 +97,14 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     
-    folders = foldersss;
-    
+    setState(() {
+      folders = foldersss;
+      print("Antes$_isLoading");
+      _isLoading = false; // Finaliza la carga
+      print("Despues$_isLoading");
+    });
 
-    print(folders);
+    //print(folders);
   }
 
   void _viewCards(int index) {
@@ -117,14 +126,14 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    // _fectchFolders();
+    _fectchFolders();
   }
 
 
   @override
   Widget build(BuildContext context) {
 
-    _fectchFolders();
+    //_fectchFolders();
 
     return Scaffold(
       appBar: AppBar(
@@ -201,6 +210,20 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           ),
         ),
+        _isLoading ? 
+        Expanded(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: 10),
+                Text('Cargando carpetas...'),
+              ],
+            ),
+          )
+          ) 
+        :
         Expanded(
           child: Padding(
             padding: const EdgeInsets.all(6.0),
