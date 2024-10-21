@@ -1,32 +1,80 @@
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:tcgarchive/views/ventana_carpetas.dart';
 import 'package:tcgarchive/views/ventana_cartas_compartida.dart';
+import 'package:tcgarchive/views/ventana_tcg.dart';
 
-// void main() {
-//   runApp(const MyApp());
-// }
-
-class SearchFolder extends StatelessWidget {
+class SearchFolder extends StatefulWidget {
   const SearchFolder({super.key});
 
   @override
+  _SearchFolderState createState() => _SearchFolderState();
+}
+
+class _SearchFolderState extends State<SearchFolder> {
+  final navigationKey = GlobalKey<CurvedNavigationBarState>();
+  int index = 0;
+
+  final screens = [
+    const SearchFolder(), // Aquí puedes cambiar por una pantalla adecuada
+    HomeScreen(),
+    SelectTcgScreen(),
+  ];
+
+  @override
   Widget build(BuildContext context) {
+    final items = <Widget>[
+      const Icon(Icons.copy, color: Color(0xFFEBEEF2)),
+      const Icon(Icons.home, color: Color(0xFFEBEEF2)),
+      const Icon(Icons.create_new_folder, color: Color(0xFFEBEEF2)),
+    ];
+
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Comunidad', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Color(0xFFEBEEF2))),
-          centerTitle: true,
-          backgroundColor: const Color(0xFF104E75),
-          iconTheme: const IconThemeData(color:  Color(0xFFEBEEF2)),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Color(0xFFEBEEF2)),
-            onPressed: () {
-              // Acción para retroceder
-              Navigator.pop(context);
-            },
-          ),
-          
+      appBar: AppBar(
+        title: const Text('Comunidad',
+            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Color(0xFFEBEEF2))),
+        centerTitle: true,
+        backgroundColor: const Color(0xFF104E75),
+        iconTheme: const IconThemeData(color: Color(0xFFEBEEF2)),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Color(0xFFEBEEF2)),
+          onPressed: () {
+            // Acción para retroceder
+            print("retroceder: $index");
+            print("$context");
+            Navigator.pop(context);
+            
+          },
         ),
-        body: const SearchPage(),
-      );
+      ),
+      bottomNavigationBar: CurvedNavigationBar(
+        key: navigationKey,
+        backgroundColor: const Color(0xFFEBEEF2),
+        buttonBackgroundColor: const Color(0xFF6194B8),
+        color: const Color(0xFF104E75),
+        animationDuration: const Duration(milliseconds: 300),
+        height: 60,
+        items: items,
+        index: index,
+        onTap: (value) {
+          
+          print("index: $value");
+          
+
+          setState(() {
+            index = value;
+            print("index dps: $index");
+          });
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => screens[index],
+            ),
+          );
+        },
+      ),
+      body: const SearchPage(),
+    );
   }
 }
 
@@ -38,7 +86,7 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  final TextEditingController _codeController = TextEditingController(); // Controlador para el campo de texto
+  final TextEditingController _codeController = TextEditingController();
 
   @override
   void dispose() {
@@ -48,15 +96,13 @@ class _SearchPageState extends State<SearchPage> {
 
   void _onSearch() {
     String code = _codeController.text; // Obtener el valor del input
-    
+
     Navigator.push(
-      context, 
+      context,
       MaterialPageRoute(
         builder: (context) => SharedFolder(folderId: code),
-      )
+      ),
     );
-    
-    // Aquí puedes agregar la lógica de búsqueda o validación del código
   }
 
   @override
@@ -78,7 +124,7 @@ class _SearchPageState extends State<SearchPage> {
             ),
             const SizedBox(height: 20),
             TextField(
-              controller: _codeController, // Asignar el controlador al TextField
+              controller: _codeController,
               decoration: InputDecoration(
                 labelText: 'Código',
                 suffixIcon: IconButton(

@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, must_be_immutable
 
 
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:tcgarchive/carpeta_compartida.dart';
 
@@ -22,6 +23,17 @@ class _HomeScreenState extends State<HomeScreen> {
   String searchQuery = ''; // Búsqueda de carpetas
   FoldersController _foldersController = FoldersController();
   bool _isLoading = true;
+  final navigationKey = GlobalKey<CurvedNavigationBarState>();
+
+  int index = 1;
+
+  final screens = [
+    SearchFolder(),
+    HomeScreen(),
+    SelectTcgScreen()
+  ];
+
+
 
   List<Map<String, dynamic>> get folders {
     if (searchQuery.isEmpty) {
@@ -99,9 +111,9 @@ class _HomeScreenState extends State<HomeScreen> {
     
     setState(() {
       folders = foldersss;
-      print("Antes$_isLoading");
+      //print("Antes$_isLoading");
       _isLoading = false; // Finaliza la carga
-      print("Despues$_isLoading");
+      //print("Despues$_isLoading");
     });
 
     //print(folders);
@@ -134,6 +146,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
 
     //_fectchFolders();
+    final items = <Widget>[
+      Icon(Icons.copy,color: Color(0xFFEBEEF2),),
+      Icon(Icons.home, color: Color(0xFFEBEEF2),),
+      Icon(Icons.create_new_folder,color: Color(0xFFEBEEF2),),
+      ];
 
     return Scaffold(
       appBar: AppBar(
@@ -148,10 +165,40 @@ class _HomeScreenState extends State<HomeScreen> {
               color: Color(0xFFEBEEF2),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
+                
               },
             );
           },
         ),
+      ),
+      bottomNavigationBar: CurvedNavigationBar(
+          key: navigationKey,
+          backgroundColor: const Color(0xFFEBEEF2),
+          buttonBackgroundColor: const Color(0xFF6194B8),
+          color: Color(0xFF104E75),
+          animationDuration: const Duration(milliseconds: 300),
+          height: 60,
+          //type: BottomNavigationBarType.shifting,
+          /* currentIndex: selectedIndex,
+          onTap: (value) => setState(() => selectedIndex = value),
+          elevation: 2,
+          backgroundColor: const Color(0xFF104E75),
+          selectedItemColor: Color(0xFFEBEEF2), */ // Color del ícono activo
+          items: items,
+          index: index,
+          onTap: (value) {
+            print("index: $index");
+            setState(() {
+              index = value;
+              print("index dps: $index");
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => screens[index],
+                ),
+              );
+            });
+          },
       ),
       drawer: Drawer(
         child: ListView(
