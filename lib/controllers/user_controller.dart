@@ -9,14 +9,40 @@ class UserController {
   final _db = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
 
-  Future<void> _createUserWithEmailAndPassword(String email, String password) async {
-    await _auth.createUserWithEmailAndPassword(email: email, password: password);
-  }
+  // Future<void> _createUserWithEmailAndPassword(String email, String password) async {
+  //   await _auth.createUserWithEmailAndPassword(email: email, password: password);
+  // }
 
-  Future<void> createUserInFirestore(UserModel user, String password) async{
-    _createUserWithEmailAndPassword(user.email, password);
+  Future<String> createUserInFirestore(UserModel user, String password) async{
+
+    // / Revisar si existe alguna cuenta con el nombre de usuario
+    var userQuery = await _db.collection("users").where("Nombre", isEqualTo: user.usernName).get();
+    if (userQuery.docs.isNotEmpty) {
+      return "Este nombre de usuario ya existe";
+    }
+
+    try {
+      await _auth.createUserWithEmailAndPassword(email: user.email, password: password);
+    } on FirebaseAuthException catch (e) {
+      String message;
+      switch (e.code) {
+        case "email-already-in-use":
+          message = "Este correo ya está siendo utilizado";
+          break;
+        case "invalid-email":
+          message = "Correo inválido";
+          break;
+        case "weak-password":
+          message = "La contraseña debe tener al menos 6 caracteres";
+          break;
+        default:
+          message = "Ha ocurrido un error, inténtalo de nuevo";
+      }
+      return message;
+    }    
     
     await _db.collection("users").doc(_auth.currentUser?.uid).set(user.toFirestore());
+    return "exito";
   }
 
   Future<bool> loginWithUsername(String username, String password) async{

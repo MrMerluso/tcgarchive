@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tcgarchive/controllers/user_controller.dart';
 import 'package:tcgarchive/login.dart';
 import 'package:tcgarchive/models/user_model.dart';
@@ -53,30 +54,51 @@ class _SignUpScreenState extends State<SignUpScreen> {
     super.dispose();
   }
 
-  void _createAccount() {
+  void _createAccount() async {
     // Obtener los valores de los campos
+    String email = _emailController.text;
+    String username = _usernameController.text;
     String password = _passwordController.text;
     String repeatPassword = _repeatPasswordController.text;
+
+    if (email == "" || username == "" || password == "" || repeatPassword == "") {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Por favor rellena todos los campos'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
 
     if (password != repeatPassword) {
       // Mostrar error si las contraseñas no coinciden
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Passwords do not match!'),
+          content: Text('Las contraseñas no coinciden'),
           backgroundColor: Colors.red,
         ),
       );
+      return;
     } else {
       // Si coinciden, continuar con el proceso de creación de cuenta
-      String email = _emailController.text;
-      String username = _usernameController.text;
+      
 
       UserModel user = UserModel(
         email: email,
         usernName: username,
       );
 
-      _userController.createUserInFirestore(user, password);
+      String registerMessage = await _userController.createUserInFirestore(user, password);
+      if (registerMessage != "exito") {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(registerMessage),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
 
       // Aquí puedes hacer la validación o procesamiento con las variables obtenidas
       print('Email: $email');
@@ -86,17 +108,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
       // Mostrar mensaje de éxito o continuar con el proceso de registro
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Account created successfully!'),
+          content: Text('Cuenta creada con éxito!'),
           backgroundColor: Colors.green,
         ),
       );
 
-      Navigator.push(
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+      Future.delayed(const Duration(seconds: 2), () {
+        Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => TCGApp(),
         ),
       );
+    });
+
+      
 
     }
   }
