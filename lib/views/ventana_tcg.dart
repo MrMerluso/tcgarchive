@@ -32,9 +32,9 @@ class _SelectTcgScreenState extends State<SelectTcgScreen> {
   int index = 2;
 
   final screens = [
-    SearchFolder(),
     HomeScreen(),
-    SelectTcgScreen()
+    SearchFolder(),
+    //SelectTcgScreen()
   ];
 
   Future<String?> _showFolderNameDialog(BuildContext context, String tcgName) {
@@ -72,15 +72,15 @@ class _SelectTcgScreenState extends State<SelectTcgScreen> {
   @override
   Widget build(BuildContext context) {
     final items = <Widget>[
-      Icon(Icons.copy,color: Color(0xFFEBEEF2),),
       Icon(Icons.home, color: Color(0xFFEBEEF2),),
-      Icon(Icons.create_new_folder,color: Color(0xFFEBEEF2),),
+      Icon(Icons.copy,color: Color(0xFFEBEEF2),),
+      //Icon(Icons.create_new_folder,color: Color(0xFFEBEEF2),),
       ];
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(color: Color(0xFFEBEEF2)),
         centerTitle: true,
-        title: Text('Seleccionar TCG', style: TextStyle(color: Color(0xFFEBEEF2), fontWeight: FontWeight.bold)),
+        title: Text('Seleccionar TCG', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Color(0xFFEBEEF2))),
         backgroundColor: const Color(0xFF104E75),
         
       ),
@@ -98,7 +98,7 @@ class _SelectTcgScreenState extends State<SelectTcgScreen> {
           backgroundColor: const Color(0xFF104E75),
           selectedItemColor: Color(0xFFEBEEF2), */ // Color del ícono activo
           items: items,
-          index: index,
+          //index: index,
           onTap: (value) {
             print("index: $index");
             setState(() {

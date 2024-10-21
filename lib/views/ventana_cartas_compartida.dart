@@ -206,7 +206,7 @@ class _SharedFolderState extends State<SharedFolder> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(folderName, style: const TextStyle(color: Color(0xFFEBEEF2), fontWeight: FontWeight.bold)),
+        title: Text(folderName, style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Color(0xFFEBEEF2))),
         backgroundColor: const Color(0xFF104E75), // Color del encabezado
         iconTheme: const IconThemeData(color:  Color(0xFFEBEEF2)),
         

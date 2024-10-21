@@ -13,26 +13,26 @@ class SearchFolder extends StatefulWidget {
 
 class _SearchFolderState extends State<SearchFolder> {
   final navigationKey = GlobalKey<CurvedNavigationBarState>();
-  int index = 0;
+  int index = 1;
 
   final screens = [
-    const SearchFolder(), // Aquí puedes cambiar por una pantalla adecuada
     HomeScreen(),
-    SelectTcgScreen(),
+    const SearchFolder(), // Aquí puedes cambiar por una pantalla adecuada
+    //SelectTcgScreen(),
   ];
 
   @override
   Widget build(BuildContext context) {
     final items = <Widget>[
-      const Icon(Icons.copy, color: Color(0xFFEBEEF2)),
       const Icon(Icons.home, color: Color(0xFFEBEEF2)),
-      const Icon(Icons.create_new_folder, color: Color(0xFFEBEEF2)),
+      const Icon(Icons.copy, color: Color(0xFFEBEEF2)),
+      //const Icon(Icons.create_new_folder, color: Color(0xFFEBEEF2)),
     ];
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Comunidad',
-            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Color(0xFFEBEEF2))),
+            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Color(0xFFEBEEF2))),
         centerTitle: true,
         backgroundColor: const Color(0xFF104E75),
         iconTheme: const IconThemeData(color: Color(0xFFEBEEF2)),

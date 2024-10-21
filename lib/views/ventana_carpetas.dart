@@ -27,12 +27,12 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _isLoading = true;
   final navigationKey = GlobalKey<CurvedNavigationBarState>();
 
-  int index = 1;
+  int index = 0;
 
   final screens = [
-    SearchFolder(),
     HomeScreen(),
-    SelectTcgScreen()
+    SearchFolder(),
+    //SelectTcgScreen()
   ];
 
 
@@ -149,29 +149,29 @@ class _HomeScreenState extends State<HomeScreen> {
 
     //_fectchFolders();
     final items = <Widget>[
-      Icon(Icons.copy,color: Color(0xFFEBEEF2),),
       Icon(Icons.home, color: Color(0xFFEBEEF2),),
-      Icon(Icons.create_new_folder,color: Color(0xFFEBEEF2),),
+      Icon(Icons.copy,color: Color(0xFFEBEEF2),),
+      //Icon(Icons.create_new_folder,color: Color(0xFFEBEEF2),),
       ];
 
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('Tus Carpetas', style: TextStyle(color: Color(0xFFEBEEF2), fontWeight: FontWeight.bold)),
+        title: const Text('Tus Carpetas', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Color(0xFFEBEEF2))),
         backgroundColor: const Color(0xFF104E75),
         iconTheme: const IconThemeData(color:  Color(0xFFEBEEF2)),
-        leading: Builder(
+        actions: [Builder(
           builder: (BuildContext context) {
             return IconButton(
-              icon: Icon(Icons.menu),
+              icon: Icon(Icons.person),
               color: Color(0xFFEBEEF2),
               onPressed: () {
-                Scaffold.of(context).openDrawer();
+                Scaffold.of(context).openEndDrawer();
                 
               },
             );
           },
-        ),
+        )],
       ),
       bottomNavigationBar: CurvedNavigationBar(
           key: navigationKey,
@@ -202,7 +202,7 @@ class _HomeScreenState extends State<HomeScreen> {
             });
           },
       ),
-      drawer: Drawer(
+      endDrawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
@@ -212,19 +212,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 decoration: BoxDecoration(
                   color: const Color(0xFF104E75),
                 ),
-                child: Text(
-                  'Opciones',
-                  style: TextStyle(
-                    color: Color(0xFFEBEEF2),
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                child: Icon(
+                  Icons.account_circle,
+                  size: 64,
+                  color: Color(0xFFEBEEF2),
+                )
               ),
             ),
             ListTile(
-              leading: Icon(Icons.copy),
-              title: Text('Buscar carpeta compartida'),
+              leading: Icon(Icons.edit),
+              title: Text('Editar perfil'),
               onTap: () {
                 Navigator.push(
                   context,
@@ -235,8 +232,8 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
             ListTile(
-              leading: Icon(Icons.create_new_folder),
-              title: Text('Crear nueva carpeta'),
+              leading: Icon(Icons.password),
+              title: Text('Cambiar contraseña'),
               onTap: _createNewFolder, // Llamar a la función de crear carpeta
             ),
             Spacer(), // Empuja la opción final hacia abajo
@@ -361,6 +358,13 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ]),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context) => SelectTcgScreen()));
+        },
+        backgroundColor: const Color(0xFF104E75), // Color del botón
+        child: Icon(Icons.add, color: Color(0xFFEBEEF2)),
+      ),
     );
   }
 }
