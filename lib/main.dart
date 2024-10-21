@@ -5,6 +5,7 @@ import 'package:tcgarchive/carpeta_compartida.dart';
 import 'package:tcgarchive/firebase_options.dart';
 
 import 'package:tcgarchive/login.dart';
+import 'package:tcgarchive/login_splashscreen.dart';
 
 import 'package:tcgarchive/registration.dart';
 import 'package:tcgarchive/views/ventana_carpetas.dart';
@@ -40,7 +41,8 @@ class MainApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => const TCGApp(),
+        '/': (context) => const LoginSplashscreen(),
+        '/login': (context) => TCGApp(),
         '/home': (context) => HomeScreen(),
         '/register': (context) => SignUpScreen(),
         '/select-tcg': (context) => SelectTcgScreen(),

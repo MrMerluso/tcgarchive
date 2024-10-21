@@ -2,10 +2,12 @@
 
 
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tcgarchive/carpeta_compartida.dart';
 
 import 'package:tcgarchive/controllers/folders_controller.dart';
+import 'package:tcgarchive/login.dart';
 import 'package:tcgarchive/models/folders_model.dart';
 import 'ventana_tcg.dart'; // Asegúrate de importar SelectTcgScreen
 import 'ventana_cartas.dart'; // Asegúrate de importar CardScreen
@@ -237,6 +239,20 @@ class _HomeScreenState extends State<HomeScreen> {
               title: Text('Crear nueva carpeta'),
               onTap: _createNewFolder, // Llamar a la función de crear carpeta
             ),
+            Spacer(), // Empuja la opción final hacia abajo
+            ListTile(
+              leading: Icon(Icons.logout),
+              title: Text('Cerrar sesión'),
+              onTap: () async {
+                await FirebaseAuth.instance.signOut(); // Cierra sesión
+                Navigator.pushReplacement(
+                  context, 
+                  MaterialPageRoute(
+                    builder: (context) => LoginPage(),
+                  ),
+                ); 
+              },
+            ),
           ],
         ),
       ),
@@ -269,7 +285,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           )
-          ) 
+        ) 
         :
         Expanded(
           child: Padding(
