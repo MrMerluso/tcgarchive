@@ -135,7 +135,7 @@ class _LoginPageState extends State<LoginPage> {
                           controller: _usernameController,
                           decoration: InputDecoration(
                             prefixIcon: const Icon(Icons.person),
-                            hintText: 'Username',
+                            hintText: 'Nombre de usuario',
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12.0),
                             ),
@@ -149,7 +149,7 @@ class _LoginPageState extends State<LoginPage> {
                           controller: _passwordController,
                           decoration: InputDecoration(
                             prefixIcon: const Icon(Icons.lock),
-                            hintText: 'Password',
+                            hintText: 'Contraseña',
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12.0),
                             ),
@@ -194,7 +194,7 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             onPressed: _onLogin,
                             child: const Text(
-                              'Login',
+                              'Iniciar Sesión',
                               style: TextStyle(fontSize: 18, color: Colors.white),
                             ),
                           ),
@@ -204,7 +204,7 @@ class _LoginPageState extends State<LoginPage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Text("Don't have an account? "),
+                            const Text("¿No tienes una cuenta? "),
                             TextButton(
                               onPressed: () {
                                 // Acción para crear una cuenta
@@ -215,7 +215,7 @@ class _LoginPageState extends State<LoginPage> {
                                   ),
                                 );
                               },
-                              child: const Text('Create an account'),
+                              child: const Text('Crear cuenta'),
                             ),
                           ],
                         ),
