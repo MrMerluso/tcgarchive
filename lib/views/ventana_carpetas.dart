@@ -156,6 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: Container(),
         centerTitle: true,
         title: const Text('Tus Carpetas', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Color(0xFFEBEEF2))),
         backgroundColor: const Color(0xFF104E75),

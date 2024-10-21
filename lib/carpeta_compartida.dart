@@ -1,5 +1,7 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tcgarchive/login.dart';
 import 'package:tcgarchive/views/ventana_carpetas.dart';
 import 'package:tcgarchive/views/ventana_cartas_compartida.dart';
 import 'package:tcgarchive/views/ventana_tcg.dart';
@@ -31,21 +33,25 @@ class _SearchFolderState extends State<SearchFolder> {
 
     return Scaffold(
       appBar: AppBar(
+        
         title: const Text('Comunidad',
             style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Color(0xFFEBEEF2))),
         centerTitle: true,
         backgroundColor: const Color(0xFF104E75),
         iconTheme: const IconThemeData(color: Color(0xFFEBEEF2)),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFFEBEEF2)),
-          onPressed: () {
-            // Acción para retroceder
-            print("retroceder: $index");
-            print("$context");
-            Navigator.pop(context);
-            
+        leading: Container(),
+        actions: [Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: Icon(Icons.person),
+              color: Color(0xFFEBEEF2),
+              onPressed: () {
+                Scaffold.of(context).openEndDrawer();
+                
+              },
+            );
           },
-        ),
+        )],
       ),
       bottomNavigationBar: CurvedNavigationBar(
         key: navigationKey,
@@ -74,6 +80,57 @@ class _SearchFolderState extends State<SearchFolder> {
         },
       ),
       body: const SearchPage(),
+      endDrawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            SizedBox(
+              height: 150,
+              child: DrawerHeader(
+                decoration: BoxDecoration(
+                  color: const Color(0xFF104E75),
+                ),
+                child: Icon(
+                  Icons.account_circle,
+                  size: 64,
+                  color: Color(0xFFEBEEF2),
+                )
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.edit),
+              title: Text('Editar perfil'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SearchFolder(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.password),
+              title: Text('Cambiar contraseña'),
+               // Llamar a la función de crear carpeta
+            ),
+            Spacer(), // Empuja la opción final hacia abajo
+            ListTile(
+              leading: Icon(Icons.logout),
+              title: Text('Cerrar sesión'),
+              onTap: () async {
+                await FirebaseAuth.instance.signOut(); // Cierra sesión
+                Navigator.pushReplacement(
+                  context, 
+                  MaterialPageRoute(
+                    builder: (context) => LoginPage(),
+                  ),
+                ); 
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
