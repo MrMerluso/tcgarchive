@@ -65,6 +65,10 @@ class _SharedFolderState extends State<SharedFolder> {
     FoldersModel folder = await _foldersController.getFolderById(folderId.trim());
     String folderTcg = folder.tcg;
 
+    setState(() {
+      folderName = folder.folderName;
+    });
+
 
     List<Map<String, dynamic>> cardsFromFolder = await _foldersController.getCardsFromFolder(folderId.trim());
 
