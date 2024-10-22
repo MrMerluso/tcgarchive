@@ -164,12 +164,11 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          children: [
-            const SizedBox(height: 150),
+        padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 20),
+          child: Column(
+            children: [
             const Text(
               'Inserte código de la carpeta pública',
               style: TextStyle(
@@ -201,9 +200,10 @@ class _SearchPageState extends State<SearchPage> {
               onPressed: _onSearch, // Acción al presionar el botón
               child: const Text('Buscar', style: TextStyle(color: Color(0xFFEBEEF2))),
             ),
-          ],
+            ],
+          ),
+
         ),
-      ),
-    );
+      );
   }
 }

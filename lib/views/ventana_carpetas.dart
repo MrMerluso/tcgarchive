@@ -328,7 +328,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 child: Image.asset(
                                   '${'images/Carpeta-azul/Carpeta-azul-'+folders[index]["tcg"]}.png',
                                   fit: BoxFit.none,
-                                  scale: 2,
+                                  scale: 2.5,
                                 ),
                               ),
                               Container(
