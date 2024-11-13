@@ -46,9 +46,10 @@ class _CardScreenState extends State<CardScreen> {
       switch (widget.tcg) {
         case "cardsPkmntcg":
           
-          CardspkmntcgModel pkmcard = card["Carta"];        
+          CardspkmntcgModel pkmcard = card["Carta"];       
           Map<String, dynamic> pkmcardDetails = pkmcard.toFirestore();
           pkmcardDetails.addAll({
+            'name': pkmcard.cardName,
             'id': pkmcard.id,
             'copies': card["Cantidad"],
             'price': card["Precio"],
@@ -63,6 +64,7 @@ class _CardScreenState extends State<CardScreen> {
           CardsopcgModel opcgcard = card["Carta"];
           Map<String, dynamic> opcgcardDetails = opcgcard.toFirestore();
           opcgcardDetails.addAll({
+            'name': opcgcard.cardName,
             'id': opcgcard.id,
             'copies': card["Cantidad"],
             'price': card["Precio"],
@@ -77,6 +79,7 @@ class _CardScreenState extends State<CardScreen> {
           Map<String, dynamic> mylcardDetails = mylcard.toFirestore();
           mylcardDetails.addAll({
             'id': mylcard.id,
+            'name': mylcard.cardName,
             'copies': card["Cantidad"],
             'price': card["Precio"],
           });

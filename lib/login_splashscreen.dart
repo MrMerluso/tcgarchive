@@ -47,8 +47,7 @@ class _LoginSplashscreenState extends State<LoginSplashscreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Expanded(
-        child: Center(
+      body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -59,7 +58,6 @@ class _LoginSplashscreenState extends State<LoginSplashscreen> {
             ],
           ),
         )
-      )
     );
   }
 }
