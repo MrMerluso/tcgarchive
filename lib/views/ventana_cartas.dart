@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter/material.dart';
+import 'package:tcgarchive/controllers/folders_controller.dart';
 import 'package:tcgarchive/models/cardsmyl_model.dart';
 import 'package:tcgarchive/models/cardsopcg_model.dart';
 import 'package:tcgarchive/models/cardspkmntcg_model.dart';
@@ -12,6 +13,7 @@ class CardScreen extends StatefulWidget {
   List<Map<String, dynamic>> cards; // Lista de cartas para esta carpeta
   final String tcg;
   final String? folderId;
+  final FoldersController _foldersController = FoldersController();
 
   CardScreen({super.key, required this.folderName, required this.cards, required this.tcg, this.folderId});
 
@@ -270,8 +272,13 @@ class _CardScreenState extends State<CardScreen> {
                         child: Text('Guardar'),
                         onPressed: () {
                           setState(() {
-                            card['price'] = double.tryParse(cardPriceController.text) ?? 0.0;
-                            card['copies'] = int.tryParse(cardCopiesController.text) ?? 0;
+
+                            print(card["id"]);
+                            print(card["copies"]);
+                            print(card["price"]);
+                            widget.cards[index]['price'] = int.tryParse(cardPriceController.text) ?? 0.0;
+                            widget.cards[index]['copies'] = int.tryParse(cardCopiesController.text) ?? 0;
+                            FoldersController().updateCardInFolder(card["id"], widget.folderId!, card["copies"], card["price"]);
                             //ScaffoldMessenger.of(context).showSnackBar(
                               //const SnackBar(
                                 //content: Text('Cambios guardados', style: TextStyle(color: Colors.white)),
