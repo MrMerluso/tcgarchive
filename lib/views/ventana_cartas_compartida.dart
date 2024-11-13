@@ -51,12 +51,12 @@ class _SharedFolderState extends State<SharedFolder> {
   // }
   final navigationKey = GlobalKey<CurvedNavigationBarState>();
 
-  int index = 0;
+  int index = 1;
 
   final screens = [
-    SearchFolder(),
     HomeScreen(),
-    SelectTcgScreen()
+    SearchFolder(),
+    //SelectTcgScreen()
   ];
 
 
@@ -203,9 +203,9 @@ class _SharedFolderState extends State<SharedFolder> {
   Widget build(BuildContext context) {
 
     final items = <Widget>[
-      Icon(Icons.copy,color: Color(0xFFEBEEF2),),
       Icon(Icons.home, color: Color(0xFFEBEEF2),),
-      Icon(Icons.create_new_folder,color: Color(0xFFEBEEF2),),
+      Icon(Icons.folder_shared,color: Color(0xFFEBEEF2),),
+      //Icon(Icons.create_new_folder,color: Color(0xFFEBEEF2),),
       ];
     return Scaffold(
       appBar: AppBar(

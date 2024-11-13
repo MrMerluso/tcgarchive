@@ -27,7 +27,7 @@ class _SearchFolderState extends State<SearchFolder> {
   Widget build(BuildContext context) {
     final items = <Widget>[
       const Icon(Icons.home, color: Color(0xFFEBEEF2)),
-      const Icon(Icons.copy, color: Color(0xFFEBEEF2)),
+      const Icon(Icons.folder_shared, color: Color(0xFFEBEEF2)),
       //const Icon(Icons.create_new_folder, color: Color(0xFFEBEEF2)),
     ];
 

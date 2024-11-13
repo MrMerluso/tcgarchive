@@ -73,7 +73,7 @@ class _SelectTcgScreenState extends State<SelectTcgScreen> {
   Widget build(BuildContext context) {
     final items = <Widget>[
       Icon(Icons.home, color: Color(0xFFEBEEF2),),
-      Icon(Icons.copy,color: Color(0xFFEBEEF2),),
+      Icon(Icons.folder_shared,color: Color(0xFFEBEEF2),),
       //Icon(Icons.create_new_folder,color: Color(0xFFEBEEF2),),
       ];
     return Scaffold(
