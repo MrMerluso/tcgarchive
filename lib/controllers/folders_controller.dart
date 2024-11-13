@@ -149,7 +149,8 @@ class FoldersController {
     return cards;
   }
 
-  Future<void> updateCardInFolder(String cardId, String folderId, int ammount) async{
+  // FIXME: Falta poder editar el precio de una carta en la carpeta
+  Future<void> updateCardInFolder(String cardId, String folderId, int ammount, int price) async{
     
     final folderRef = _db.collection("cardFolders").doc(folderId);
 
@@ -166,6 +167,7 @@ class FoldersController {
     for (var card in cardInFolder.docs) {
       await card.reference.update({
         "Cantidad": ammount,
+        "Precio": price,
       });
     }
   }
