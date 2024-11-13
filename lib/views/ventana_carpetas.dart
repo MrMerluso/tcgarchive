@@ -336,7 +336,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(12),
-                                  color: Color(0xFF6194B8),
+                                  color: Color(0xFF104E75),
                                 ),
                                 child: Text(
                                   folders[index]['name'],

@@ -297,6 +297,12 @@ class _CardScreenState extends State<CardScreen> {
                                       FoldersController().deleteCardInFolder(card["id"], widget.folderId!);
                                       ScaffoldMessenger.of(context).showSnackBar(
                                         const SnackBar(
+                                          behavior: SnackBarBehavior.floating,
+                                          margin: EdgeInsets.only(
+                                            bottom: 10.0, // Ajusta este valor para la distancia deseada del FAB
+                                            left: 16.0,
+                                            right: 16.0,
+                                          ),
                                           duration: Duration(milliseconds: 1500),
                                           content: Text('Carta eliminada', style: TextStyle(color: Colors.white)),
                                           backgroundColor: Colors.red,
@@ -323,6 +329,12 @@ class _CardScreenState extends State<CardScreen> {
                           });
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
+                                behavior: SnackBarBehavior.floating,
+                                margin: EdgeInsets.only(
+                                  bottom: 10.0, // Ajusta este valor para la distancia deseada del FAB
+                                  left: 16.0,
+                                  right: 16.0,
+                                ),
                                 duration: Duration(milliseconds: 1500),
                                 content: Text('Cambios guardados', style: TextStyle(color: Colors.white)),
                                 backgroundColor: Colors.green,
@@ -364,8 +376,8 @@ class _CardScreenState extends State<CardScreen> {
                 copiarAlPortapapeles("id de la base de datos");
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    behavior: SnackBarBehavior.floating,
                     duration: Duration(milliseconds: 1500),
+                    behavior: SnackBarBehavior.floating,
                     margin: EdgeInsets.only(
                       bottom: 10.0, // Ajusta este valor para la distancia deseada del FAB
                       left: 16.0,
