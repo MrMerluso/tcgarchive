@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter/material.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:tcgarchive/controllers/folders_controller.dart';
 import 'package:tcgarchive/models/cardsmyl_model.dart';
 import 'package:tcgarchive/models/cardsopcg_model.dart';
@@ -23,6 +24,7 @@ class CardScreen extends StatefulWidget {
 
 class _CardScreenState extends State<CardScreen> {
   String searchQuery = ''; // Búsqueda de cartas
+  bool _isLoading = true;
 
   List<Map<String, dynamic>> get filteredCards {
     if (searchQuery.isEmpty) {
@@ -42,9 +44,16 @@ class _CardScreenState extends State<CardScreen> {
 
 
   Future<void> _fetchCards() async{
+
+   setState(() {
+     _isLoading = true;
+   });
+
+    List<Map<String, dynamic>> cardsFromFolder = await widget._foldersController.getCardsFromFolder(widget.folderId!);
+
     List<Map<String, dynamic>> newCards = [];
 
-    for (var card in widget.cards) {
+    for (var card in cardsFromFolder) {
       switch (widget.tcg) {
         case "cardsPkmntcg":
           
@@ -97,6 +106,9 @@ class _CardScreenState extends State<CardScreen> {
 
     cards = newCards;
 
+    setState(() {
+      _isLoading = false;
+    });
 
   }
 
@@ -359,6 +371,20 @@ class _CardScreenState extends State<CardScreen> {
               },
             ),
           ),
+          _isLoading ? 
+          Expanded(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 10),
+                  Text('Cargando tus cartas...'),
+                ],
+              ),
+            )
+          ) 
+          :
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
