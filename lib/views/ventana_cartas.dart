@@ -61,7 +61,7 @@ class _CardScreenState extends State<CardScreen> {
           Map<String, dynamic> pkmcardDetails = pkmcard.toFirestore();
           pkmcardDetails.addAll({
             'name': pkmcard.cardName,
-            'id': pkmcard.id,
+            'id': card["idInFolder"],
             'copies': card["Cantidad"],
             'price': card["Precio"],
           });
@@ -76,7 +76,7 @@ class _CardScreenState extends State<CardScreen> {
           Map<String, dynamic> opcgcardDetails = opcgcard.toFirestore();
           opcgcardDetails.addAll({
             'name': opcgcard.cardName,
-            'id': opcgcard.id,
+            'id': card["idInFolder"],
             'copies': card["Cantidad"],
             'price': card["Precio"],
           });
@@ -89,7 +89,7 @@ class _CardScreenState extends State<CardScreen> {
           CardsmylModel mylcard = card["Carta"];
           Map<String, dynamic> mylcardDetails = mylcard.toFirestore();
           mylcardDetails.addAll({
-            'id': mylcard.id,
+            'id': card["idInFolder"],
             'name': mylcard.cardName,
             'copies': card["Cantidad"],
             'price': card["Precio"],

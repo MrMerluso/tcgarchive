@@ -103,6 +103,7 @@ class FoldersController {
           final cardSnap = await card.card.get();
           CardspkmntcgModel pkmcard = CardspkmntcgModel.fromSnapshot(cardSnap);            
           cards.add({
+            "idInFolder": card.id,
             "Carta": pkmcard,
             "Precio": card.precio,
             "Cantidad": card.cantidad,
@@ -116,6 +117,7 @@ class FoldersController {
           final cardSnap = await card.card.get();
           CardsmylModel mylCard = CardsmylModel.fromSnapshot(cardSnap);            
           cards.add({
+            "idInFolder": card.id,
             "Carta": mylCard,
             "Precio": card.precio,
             "Cantidad": card.cantidad,
@@ -129,6 +131,7 @@ class FoldersController {
           final cardSnap = await card.card.get();
           CardsopcgModel opcgCard = CardsopcgModel.fromSnapshot(cardSnap);            
           cards.add({
+            "idInFolder": card.id,
             "Carta": opcgCard,
             "Precio": card.precio,
             "Cantidad": card.cantidad,
@@ -168,23 +171,23 @@ class FoldersController {
     }
   }
 
-  Future<void> deleteCardInFolder(String cardId, String folderId) async{
+  Future<void> deleteCardInFolder(String cardIdInFolder, String folderId) async{
     
     final folderRef = _db.collection("cardFolders").doc(folderId);
 
     final folderSnap = await folderRef.get();
     final tcg = folderSnap.data()?["Tcg"];
 
-    DocumentReference cardRef = _db.collection(tcg).doc(cardId);
+    // DocumentReference cardRef = _db.collection(tcg).doc(cardId);
 
     final cardInFolder = await folderRef
       .collection("Cartas")
-      .where("Carta", isEqualTo: cardRef)
-      .get();
+      .doc(cardIdInFolder)
+      .delete();
 
-    for (var card in cardInFolder.docs) {
-      await card.reference.delete();
-    }
+    // for (var card in cardInFolder.docs) {
+    //   await card.reference.delete();
+    // }
   }
 
 }

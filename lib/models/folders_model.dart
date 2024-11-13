@@ -24,6 +24,7 @@ class CardInFolder {
   factory CardInFolder.fromSnapshot(DocumentSnapshot doc){
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     return CardInFolder(
+      id: doc.id,
       cantidad: data["Cantidad"], 
       precio: data["Precio"],
       card: data["Carta"]
