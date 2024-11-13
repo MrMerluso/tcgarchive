@@ -1,10 +1,10 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:tcgarchive/login.dart';
-import 'package:tcgarchive/views/ventana_carpetas.dart';
-import 'package:tcgarchive/views/ventana_cartas_compartida.dart';
-import 'package:tcgarchive/views/ventana_tcg.dart';
+import 'package:tcgarchive/views/login/login.dart';
+import 'package:tcgarchive/views/folders/ventana_carpetas.dart';
+import 'package:tcgarchive/views/share/ventana_cartas_compartida.dart';
+import 'package:tcgarchive/views/folders/ventana_tcg.dart';
 
 class SearchFolder extends StatefulWidget {
   const SearchFolder({super.key});
@@ -184,10 +184,6 @@ class _SearchPageState extends State<SearchPage> {
               controller: _codeController,
               decoration: InputDecoration(
                 labelText: 'Código',
-                suffixIcon: IconButton(
-                  onPressed: _onSearch,
-                  icon: const Icon(Icons.search),
-                ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(40.0),
                 ),
@@ -198,8 +194,18 @@ class _SearchPageState extends State<SearchPage> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF104E75),
               ),
+              
               onPressed: _onSearch, // Acción al presionar el botón
-              child: const Text('Buscar', style: TextStyle(color: Color(0xFFEBEEF2))),
+              child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.search, color: Color(0xFFEBEEF2),),
+                SizedBox(width: 8),
+                Text('Buscar', style: TextStyle(color: Color(0xFFEBEEF2))), 
+              ]
+
+              ) 
             ),
           ],
         ),

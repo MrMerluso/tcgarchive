@@ -1,16 +1,16 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:tcgarchive/carpeta_compartida.dart';
+import 'package:tcgarchive/views/share/carpeta_compartida.dart';
 
 import 'package:tcgarchive/firebase_options.dart';
 
-import 'package:tcgarchive/login.dart';
-import 'package:tcgarchive/login_splashscreen.dart';
+import 'package:tcgarchive/views/login/login.dart';
+import 'package:tcgarchive/views/login/login_splashscreen.dart';
 
-import 'package:tcgarchive/registration.dart';
-import 'package:tcgarchive/views/ventana_carpetas.dart';
-import 'package:tcgarchive/views/ventana_cartas.dart';
-import 'package:tcgarchive/views/ventana_tcg.dart';
+import 'package:tcgarchive/views/login/registration.dart';
+import 'package:tcgarchive/views/folders/ventana_carpetas.dart';
+import 'package:tcgarchive/views/folders/ventana_cartas.dart';
+import 'package:tcgarchive/views/folders/ventana_tcg.dart';
 
 void main() async {
 

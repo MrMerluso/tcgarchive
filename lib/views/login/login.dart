@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tcgarchive/controllers/user_controller.dart';
-import 'package:tcgarchive/registration.dart';
-import 'package:tcgarchive/views/ventana_carpetas.dart';
+import 'package:tcgarchive/views/login/registration.dart';
+import 'package:tcgarchive/views/folders/ventana_carpetas.dart';
 
 void main() {
   runApp(const TCGApp());

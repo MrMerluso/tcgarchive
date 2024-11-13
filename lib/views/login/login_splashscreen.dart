@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:tcgarchive/login.dart';
-import 'package:tcgarchive/views/ventana_carpetas.dart';
+import 'package:tcgarchive/views/login/login.dart';
+import 'package:tcgarchive/views/folders/ventana_carpetas.dart';
 
 class LoginSplashscreen extends StatefulWidget {
   const LoginSplashscreen({super.key});

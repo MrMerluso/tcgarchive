@@ -9,10 +9,10 @@ import 'package:tcgarchive/models/cardsmyl_model.dart';
 import 'package:tcgarchive/models/cardsopcg_model.dart';
 import 'package:tcgarchive/models/cardspkmntcg_model.dart';
 import 'package:tcgarchive/models/folders_model.dart';
-import 'package:tcgarchive/views/ventana_carpetas.dart';
-import 'package:tcgarchive/views/ventana_tcg.dart';
+import 'package:tcgarchive/views/folders/ventana_carpetas.dart';
+import 'package:tcgarchive/views/folders/ventana_tcg.dart';
 
-import '../carpeta_compartida.dart';
+import 'carpeta_compartida.dart';
 
 class SharedFolder extends StatefulWidget {
   // final String folderName; // Nombre de la carpeta

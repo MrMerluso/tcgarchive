@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tcgarchive/controllers/user_controller.dart';
-import 'package:tcgarchive/login.dart';
+import 'package:tcgarchive/views/login/login.dart';
 import 'package:tcgarchive/models/user_model.dart';
 
 // void main() {

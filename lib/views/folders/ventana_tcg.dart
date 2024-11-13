@@ -2,8 +2,8 @@
 
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:tcgarchive/carpeta_compartida.dart';
-import 'package:tcgarchive/views/ventana_carpetas.dart';
+import 'package:tcgarchive/views/share/carpeta_compartida.dart';
+import 'package:tcgarchive/views/folders/ventana_carpetas.dart';
 
 class SelectTcgScreen extends StatefulWidget {
   @override
