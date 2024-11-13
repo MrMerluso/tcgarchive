@@ -48,7 +48,6 @@ class FoldersController {
   }
 
   Future<FoldersModel> getFolderById(String id) async{
-    print("JAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJ");
     print(id.trim());
     final folderSnapshot = await _db.collection("cardFolders").doc(id.trim()).get();
     return FoldersModel.fromSnapshot(folderSnapshot);
@@ -93,9 +92,6 @@ class FoldersController {
     String folderTcg = folderDoc.data()?["Tcg"];
 
     final cardRefs = querySnapshot.docs.map((doc) => CardInFolder.fromSnapshot(doc)).toList();
-
-    print("ALKÑDSJFGLÑKJASJDÑHGAJNA{LSDJFPUIQEA{OIGJA{ON<HB{ÓIHRGE}[>aNO{E+HGN}{+<OIEHNRG}]}}}");
-    print(cardRefs);
     
     List<Map<String, dynamic>> cards = List.empty(growable: true);
 

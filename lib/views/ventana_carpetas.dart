@@ -365,6 +365,7 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         backgroundColor: const Color(0xFF104E75), // Color del botón
         child: Icon(Icons.add, color: Color(0xFFEBEEF2)),
+        tooltip: 'Añadir carpeta',
       ),
     );
   }

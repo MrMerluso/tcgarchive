@@ -268,16 +268,48 @@ class _CardScreenState extends State<CardScreen> {
                       TextButton(
                         child: Text('Eliminar', style: TextStyle(color: Colors.red)),
                         onPressed: () {
-                          setState(() {
-                            widget.cards.removeAt(index);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Carta eliminada', style: TextStyle(color: Colors.white)),
-                                backgroundColor: Colors.red,
-                            ),
-                            ); // Eliminar la carta
-                          });
-                          Navigator.of(context).pop(); // Cerrar el diálogo
+
+                          showDialog(
+                            context: context, 
+                            builder: (BuildContext context){
+                              return AlertDialog(
+                                title: Text('Eliminar ${card['name']}'),
+                                content: RichText(text: TextSpan(
+                                  text: 'La carta se borrará permanentemente de esta carpeta y tendrás que agregarla nuevamente, ¿Estás seguro de eliminar ',
+                                  style: TextStyle(color: Colors.black),
+                                  children: [
+                                    TextSpan(text: '${card['name']}?', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  ]
+                                )),
+                                actions: [
+                                  TextButton(
+                                    child: Text('Cancelar'),
+                                    onPressed: () {
+                                      Navigator.of(context).pop(); // Cerrar el diálogo
+                                    },
+                                  ),
+                                  TextButton(
+                                    child: Text('Eliminar'),
+                                    onPressed: () {
+                                      setState(() {
+                                        widget.cards.removeAt(index);
+                                      });
+                                      FoldersController().deleteCardInFolder(card["id"], widget.folderId!);
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                          duration: Duration(milliseconds: 1500),
+                                          content: Text('Carta eliminada', style: TextStyle(color: Colors.white)),
+                                          backgroundColor: Colors.red,
+                                        ),
+                                      ); // Eliminar la carta
+                                      Navigator.of(context).pop();
+                                      Navigator.of(context).pop(); // Cerrar el diálogo
+                                    },
+                                  ),
+                                ],
+                              );
+                            });
+                          //Navigator.of(context).pop(); // Cerrar el diálogo
                         },
                       ),
                       TextButton(
@@ -285,19 +317,17 @@ class _CardScreenState extends State<CardScreen> {
                         onPressed: () {
                           setState(() {
 
-                            print(card["id"]);
-                            print(card["copies"]);
-                            print(card["price"]);
                             widget.cards[index]['price'] = int.tryParse(cardPriceController.text) ?? 0.0;
                             widget.cards[index]['copies'] = int.tryParse(cardCopiesController.text) ?? 0;
                             FoldersController().updateCardInFolder(card["id"], widget.folderId!, card["copies"], card["price"]);
-                            //ScaffoldMessenger.of(context).showSnackBar(
-                              //const SnackBar(
-                                //content: Text('Cambios guardados', style: TextStyle(color: Colors.white)),
-                                //backgroundColor: Colors.green,
-                              //),
-                            //);
                           });
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                duration: Duration(milliseconds: 1500),
+                                content: Text('Cambios guardados', style: TextStyle(color: Colors.white)),
+                                backgroundColor: Colors.green,
+                              ),
+                            );
                           Navigator.of(context).pop(); // Guardar cambios y cerrar el diálogo
                         },
                       ),
@@ -334,17 +364,15 @@ class _CardScreenState extends State<CardScreen> {
                 copiarAlPortapapeles("id de la base de datos");
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                  backgroundColor: Colors.green,
-                  content: Row(
-                    children: const [
-                      Icon(
-                        Icons.copy_sharp, // Elige el icono que prefieras
-                        color: Colors.white,
+                    behavior: SnackBarBehavior.floating,
+                    duration: Duration(milliseconds: 1500),
+                    margin: EdgeInsets.only(
+                      bottom: 10.0, // Ajusta este valor para la distancia deseada del FAB
+                      left: 16.0,
+                      right: 16.0,
                       ),
-                    SizedBox(width: 10), // Espacio entre el icono y el texto
-                      Text('Código copiado en portapapeles', style: TextStyle(color: Colors.white)),
-                    ],
-                  ),
+                  backgroundColor: Colors.green,
+                  content:  Text('Código copiado en portapapeles', style: TextStyle(color: Colors.white)),
                 ),
               );
             },
@@ -412,13 +440,16 @@ class _CardScreenState extends State<CardScreen> {
                                 fit: BoxFit.cover,
                               ),
                             ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              '\$${card['price']}',
-                              style: TextStyle(fontSize: 16, color: Colors.black),
-                            ),
-                          ),
+                          //card['price'] != 0
+                            //? 
+                            Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  '\$${card['price']}',
+                                  style: TextStyle(fontSize: 16, color: Colors.black),
+                                  ),
+                                )
+                            //: SizedBox.shrink(),
                         ],
                       ),
                       Positioned(
@@ -446,6 +477,7 @@ class _CardScreenState extends State<CardScreen> {
         onPressed: _addCard,
         backgroundColor: const Color(0xFF104E75), // Color del botón
         child: Icon(Icons.add, color: Color(0xFFEBEEF2)),
+        tooltip: "Añadir carta",
       ),
     );
   }
