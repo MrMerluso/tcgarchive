@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:tcgarchive/views/addCards/add_cards.dart';
 import 'package:tcgarchive/views/share/carpeta_compartida.dart';
 
 import 'package:tcgarchive/firebase_options.dart';
@@ -49,6 +50,7 @@ class MainApp extends StatelessWidget {
         '/select-tcg': (context) => SelectTcgScreen(),
         '/cards': (context) => CardScreen(folderName: 'defaultFolder', cards: [], tcg: 'cardsPkmntcg'), // Nueva ruta para la ventana de cartas
         '/shared-folder': (context) => SearchFolder(),
+        '/add-cards': (context) => AddCards(folderName: '', cards: [], tcg: 'cardsPkmntcg', folderId: '',),
       },
     );
 

@@ -3,29 +3,154 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:tcgarchive/controllers/folders_controller.dart';
 import 'package:tcgarchive/models/cardsmyl_model.dart';
 import 'package:tcgarchive/models/cardsopcg_model.dart';
 import 'package:tcgarchive/models/cardspkmntcg_model.dart';
-import 'package:tcgarchive/views/addCards/add_cards.dart';
 
-class CardScreen extends StatefulWidget {
+class AddCards extends StatefulWidget {
+  
   final String folderName; // Nombre de la carpeta
-  List<Map<String, dynamic>> cards; // Lista de cartas para esta carpeta
+  List<Map<String, dynamic>> cards; // Lista de cartas de la db
   final String tcg;
   final String? folderId;
   final FoldersController _foldersController = FoldersController();
 
-  CardScreen({super.key, required this.folderName, required this.cards, required this.tcg, this.folderId});
+  AddCards({super.key, required this.folderName, required this.cards, required this.tcg, required this.folderId});
+
+  //filters pkmntcg
+  final List<String> energyTypes = [
+    'Grass', 'Fire', 'Water', 'Lightning', 'Psychic', 'Darkness', 'Metal', 'Dragon', 'Fairy', 'Fighting', 'Colorless'
+  ];
+  final List<String> selectedEnergyTypes = [];
+
+  final List<String> evolved = [
+    'Basic', 'Stage 1', 'Stage 2', 'Pokemon V', 'Pokemon VSTAR'
+  ];
+  final List<String> selectedEvolved = [];
+
+  final List<String> cardTypePkmn = [
+    'Pokemon', 'Trainer Item', 'Energy'
+  ];
+  final List<String> selectedTypePkmn = [];
+
+  final List<String> raritiesPkmn = [
+    'Common', 'Uncommon', 'Rare', 'Rare Holo','Rare Holo EX', 'Rare Holo GX','Rare Holo Lv.X', 'LEGEND', 'Ultra Rare', 'Rare Prime', 'Double Rare',
+    'ACE SPEC rare','Rare BREAK','Promo', 'Illustration Rare', 'Shiny Ultra Rare', 'Hyper Rare', 'Amazing', 'Radiant Rare', 'Special Illustration Rare','Shiny Rare'
+  ];
+  final List<String> selectedRaritiesPkmn = [];
+
+  final List<String> expansionsPkmn = [
+    'Stellar Crown', 'Shrouded Fable', 'Twilight Masquerade', 
+  ];
+  final List<String> selectedExpansionsPkmn = [];
+
+  //filters opcg
+
+  final List<String> colorsOp = [ 
+    'Black', 'Blue', 'Red', 'Green', 'Yellow', 'Purple', 'Multicolor'
+  ];
+  final List<String> selectedColors = [];
+
+  final List<String> cardTypeOpcg = [
+    'Leader', 'Character', 'Event', 'Stage'
+  ];
+  final List<String> selectedTypeOpcg = [];
+
+  final List<String> illustraationTypeOpcg = [
+    'Comic', 'Animation', 'Original Illustrations', 'Other'
+  ];
+  final List<String> selectedIllustraTypeOpcg = [];
+
+  final List<String> expansionsOpcg = [
+    'OP-05', 'ST-18'
+  ];
+  final List<String> selectedExpansionsOpcg = [];
+
+  // fitlers myl
+  final List<String> cardTypeMyl = [
+     'Aliado', 'Talismán', 'Arma', 'Tótem', 'Oro'
+  ];
+  final List<String> selectedTypeMyl = [];
+
+  final List<String> raritiesMyl = [
+    'Vasallo', 'Cortesano', 'Real', 'Mega Real', 'Ultra Real','Legendaria', 'Promo'
+  ];
+  final List<String> selectedRaritiesMyl = [];
+
+  final List<String> raceMyl = [
+    'Dragón', 'Faerie', 'Caballero', 'Sacerdote', 'Eterno', 'Faraón', 
+    'Desafiante', 'Defensor', 'Sombra', 'Titán', 'Olímpico', 'Héroe'
+  ];
+  final List<String> selectedRaceMyl = [];
+
+  final List<String> expansionsMyl = [
+    'Espada Sagrada', 'Dominios de Ra', 'Hijos de Daana', 'Helénica' 
+  ];
+  final List<String> selectedExpansionsMyl = [];
+
+  final List<String> cost = [
+    '0', '1', '2', '3', '4', '5', '6'
+  ];
+  final List<String> selectedCost = [];
+
+
 
   @override
-  _CardScreenState createState() => _CardScreenState();
+  _AddCardsState createState() => _AddCardsState();
 }
 
-class _CardScreenState extends State<CardScreen> {
+class _AddCardsState extends State<AddCards> {
   String searchQuery = ''; // Búsqueda de cartas
   bool _isLoading = true;
+
+
+  Widget _buildFilterChip(String label, List<String> selectedList) {
+  final isSelected = selectedList.contains(label);
+  return FilterChip(
+    label: Text(
+      label,
+      style: TextStyle(
+        color: isSelected ? Color(0xFFEBEEF2) : Colors.black,
+      ),
+    ),
+    selected: isSelected,
+    backgroundColor: Colors.grey[200],
+    selectedColor: Color(0xFF104E75),
+    onSelected: (bool selected) {
+      setState(() {
+        if (selected) {
+          selectedList.add(label);
+        } else {
+          selectedList.remove(label);
+        }
+        // La propiedad `selected` ya está controlada por el estado de `isSelected`.
+        print(selectedList);
+      });
+    },
+  );
+}
+
+   Widget _buildFilterSection(String title, List<String> items, List<String> selectedList) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        SizedBox(height: 8),
+        Wrap(
+          spacing: 8, // Espacio horizontal entre chips
+          runSpacing: 8, // Espacio vertical entre filas de chips
+          children: items.map((item) => _buildFilterChip(item, selectedList)).toList(),
+        ),
+        SizedBox(height: 16),
+      ],
+    );
+  }
 
   List<Map<String, dynamic>> get filteredCards {
     if (searchQuery.isEmpty) {
@@ -113,14 +238,8 @@ class _CardScreenState extends State<CardScreen> {
 
   }
 
-  void _addCard() async {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => AddCards(folderName: widget.folderName, cards: [], tcg: widget.tcg, folderId: widget.folderId),
-      ),
-    );
-    /* final Map<String, dynamic>? newCard = await showDialog<Map<String, dynamic>>(
+  void _addCardtoFolder() async {
+    final Map<String, dynamic>? newCard = await showDialog<Map<String, dynamic>>(
       context: context,
       builder: (BuildContext context) {
         final TextEditingController cardNameController = TextEditingController();
@@ -175,7 +294,7 @@ class _CardScreenState extends State<CardScreen> {
       setState(() {
         widget.cards.add(newCard); // Agregar nueva carta a la lista
       });
-    } */
+    }
   }
 
   // Función para mostrar la imagen en grande con opciones de editar o eliminar
@@ -359,10 +478,21 @@ class _CardScreenState extends State<CardScreen> {
         );
       },
     );
+
+
   }
 
-  void copiarAlPortapapeles(String texto) {
-    Clipboard.setData(ClipboardData(text: widget.folderId!));
+  String _titleName(String tcg){
+    switch (tcg) {
+      case "cardsPkmntcg":
+        return 'Cartas Pokémon TCG';
+      case "cardsOpcg":
+        return 'One Piece Card Game';
+      case "cardsMyl":
+        return 'Cartas Mitos y Leyendas';
+      default:
+        return 'Cartas';
+    }
   }
 
   @override
@@ -376,48 +506,111 @@ class _CardScreenState extends State<CardScreen> {
     return Scaffold(
       appBar: AppBar(
         iconTheme: const IconThemeData(color:  Color(0xFFEBEEF2)),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.share),
-              onPressed: () {
-                copiarAlPortapapeles("id de la base de datos");
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    duration: Duration(milliseconds: 1500),
-                    behavior: SnackBarBehavior.floating,
-                    margin: EdgeInsets.only(
-                      bottom: 10.0, // Ajusta este valor para la distancia deseada del FAB
-                      left: 16.0,
-                      right: 16.0,
-                      ),
-                  backgroundColor: Colors.green,
-                  content:  Text('Código copiado en portapapeles', style: TextStyle(color: Colors.white)),
-                ),
-              );
-            },
-          ),
-        ],
         centerTitle: true,
-        title: Text(widget.folderName, style: const TextStyle(color: Color(0xFFEBEEF2), fontWeight: FontWeight.bold)),
+        title: Text(_titleName(widget.tcg), style: const TextStyle(color: Color(0xFFEBEEF2), fontWeight: FontWeight.bold)),
         backgroundColor: const Color(0xFF104E75), // Color del encabezado
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Buscar carta...',
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-              ),
-              onChanged: (query) {
-                setState(() {
-                  searchQuery = query; // Actualizar la búsqueda
-                });
+          Padding(padding: const EdgeInsets.all(16.0),
+            child:
+           Row(
+              children:[
+              Expanded(
+                child: TextField(
+                  decoration: InputDecoration(
+                  hintText: 'Buscar carta...',
+                  prefixIcon: Icon(Icons.search),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: Color(0xFF0000000))),
+                ),
+                onChanged: (query) {
+                  setState(() {
+                    searchQuery = query; // Actualizar la búsqueda
+                  });
               },
             ),
           ),
+          SizedBox(width: 5),
+          Container(
+             height: 55.0,
+                width: 55.0,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black45, width: 1.0, style: BorderStyle.solid, strokeAlign: BorderSide.strokeAlignInside),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+            child:
+            IconButton(onPressed: (){
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                return Dialog(
+                  insetPadding: EdgeInsets.zero, // Elimina el padding predeterminado
+                  child: Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    child: Column(
+                      children: [
+                        AppBar(
+                          title: Text('Filtrar Cartas'),
+                          automaticallyImplyLeading: false,
+                          leading: 
+                          IconButton(
+                            icon: Icon(Icons.close),
+                            onPressed: () => Navigator.of(context).pop(),
+                            color: Colors.black,
+                          ),
+                
+                        ),
+                Expanded(
+                  child: SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: 
+              widget.tcg == 'cardsOpcg'
+            ? [
+                _buildFilterSection('Colors', widget.colorsOp, widget.selectedColors),
+                _buildFilterSection('Card Type', widget.cardTypeOpcg, widget.selectedTypeOpcg),
+                _buildFilterSection('Illustration Type', widget.illustraationTypeOpcg, widget.selectedIllustraTypeOpcg),
+                _buildFilterSection('Expansions', widget.expansionsOpcg, widget.selectedExpansionsOpcg),              
+              ]
+            : widget.tcg == 'cardsPkmntcg'
+            ? [
+                _buildFilterSection('Energy Types', widget.energyTypes, widget.selectedEnergyTypes),
+                _buildFilterSection('Evolution Stage', widget.evolved, widget.selectedEvolved),
+                _buildFilterSection('Card Type', widget.cardTypePkmn, widget.selectedTypePkmn),
+                _buildFilterSection('Rarity', widget.raritiesPkmn, widget.selectedRaritiesPkmn),
+                _buildFilterSection('Expansions', widget.expansionsPkmn, widget.selectedExpansionsPkmn),
+                  ]
+            : widget.tcg == 'cardsMyl'
+              ?[
+                _buildFilterSection('Tipo de Carta', widget.cardTypeMyl, widget.selectedTypeMyl),
+                _buildFilterSection('Rareza', widget.raritiesMyl, widget.selectedRaritiesMyl),
+                _buildFilterSection('Raza', widget.raceMyl, widget.selectedRaceMyl),
+                _buildFilterSection('Expansiones', widget.expansionsMyl, widget.selectedExpansionsMyl),
+                _buildFilterSection('Costo', widget.cost, widget.selectedCost),
+              ]
+            : [],
+          
+          
+        ),
+      ),
+    )
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+            }, icon: Icon(Icons.filter_alt), color: Color(0xFF104E75), iconSize: 30),
+            
+          ),
+              
+              
+        ],))
+          ,
           _isLoading ? 
           Expanded(
             child: Center(
@@ -492,12 +685,7 @@ class _CardScreenState extends State<CardScreen> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _addCard, // Navegar a la pantalla de añadir carta
-        backgroundColor: const Color(0xFF104E75), // Color del botón
-        child: Icon(Icons.add, color: Color(0xFFEBEEF2)),
-        tooltip: "Añadir carta",
-      ),
     );
+    
   }
 }
