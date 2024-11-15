@@ -1,4 +1,6 @@
 // ignore_for_file: prefer_const_constructors
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 
@@ -20,9 +22,15 @@ class AddCards extends StatefulWidget {
 
   AddCards({super.key, required this.folderName, required this.cards, required this.tcg, required this.folderId});
 
-  //filters pkmntcg
+
+  @override
+  _AddCardsState createState() => _AddCardsState();
+}
+
+class MyDialog extends StatefulWidget {
+  
   final List<String> energyTypes = [
-    'Grass', 'Fire', 'Water', 'Lightning', 'Psychic', 'Darkness', 'Metal', 'Dragon', 'Fairy', 'Fighting', 'Colorless'
+    'Grass', 'Fire', 'Water', 'Lightning', 'Psychic', 'Darkness', 'Metal', 'Dragon', 'Fighting', 'Colorless'
   ];
   final List<String> selectedEnergyTypes = [];
 
@@ -96,35 +104,40 @@ class AddCards extends StatefulWidget {
   ];
   final List<String> selectedCost = [];
 
+  final String tcg;
+
+  MyDialog({super.key,required this.tcg});
 
 
   @override
-  _AddCardsState createState() => _AddCardsState();
+  _MyDialogState createState() => _MyDialogState();
 }
 
-class _AddCardsState extends State<AddCards> {
-  String searchQuery = ''; // Búsqueda de cartas
-  bool _isLoading = true;
+class _MyDialogState extends State<MyDialog> {
 
-
-  Widget _buildFilterChip(String label, List<String> selectedList) {
-  final isSelected = selectedList.contains(label);
+  Widget _buildFilterChip(String filterText, List<String> selectedList) {
+  final isSelected = selectedList.contains(filterText);
+  print(selectedList);
+  print(isSelected);
   return FilterChip(
     label: Text(
-      label,
+      filterText,
       style: TextStyle(
         color: isSelected ? Color(0xFFEBEEF2) : Colors.black,
       ),
     ),
+    checkmarkColor: Color(0xFFEBEEF2),
     selected: isSelected,
     backgroundColor: Colors.grey[200],
-    selectedColor: Color(0xFF104E75),
+    selectedColor: Color(0xFF6194E2),
     onSelected: (bool selected) {
+      print(selected);
       setState(() {
-        if (selected) {
-          selectedList.add(label);
+        if (selected && selectedList.contains(filterText) == false) {
+          selectedList.add(filterText);
+          print("${selected}variable");
         } else {
-          selectedList.remove(label);
+          selectedList.remove(filterText);
         }
         // La propiedad `selected` ya está controlada por el estado de `isSelected`.
         print(selectedList);
@@ -151,6 +164,160 @@ class _AddCardsState extends State<AddCards> {
       ],
     );
   }
+
+  void _resetFiters(String tcg){
+    setState(() {
+    switch (tcg) {
+      case 'cardsOpcg':
+        widget.selectedColors.clear();
+        widget.selectedTypeOpcg.clear();
+        widget.selectedIllustraTypeOpcg.clear();
+        widget.selectedExpansionsOpcg.clear();
+        break;
+      case 'cardsMyl':
+      widget.selectedTypeMyl.clear();
+      widget.selectedRaritiesMyl.clear();
+      widget.selectedRaceMyl.clear();
+      widget.selectedExpansionsMyl.clear();
+      widget.selectedCost.clear();
+      break;
+      case 'cardsPkmntcg':
+      widget.selectedEnergyTypes.clear();
+      widget.selectedEvolved.clear();
+      widget.selectedTypePkmn.clear();
+      widget.selectedRaritiesPkmn.clear();
+      widget.selectedExpansionsPkmn.clear();
+      break;
+  }
+      
+    });
+
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+                  insetPadding: EdgeInsets.zero, // Elimina el padding predeterminado
+                  child:
+                   Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    child: Column(
+                      children: [
+                        AppBar(
+                          title: Text('Filtrar Cartas'),
+                          automaticallyImplyLeading: false,
+                          leading: 
+                          IconButton(
+                            icon: Icon(Icons.close),
+                            onPressed: () => Navigator.of(context).pop(),
+                            color: Colors.black,
+                          ),
+                          actions: [
+                            Padding(
+                              padding: EdgeInsets.only(right: 10.0),
+                              child: TextButton
+                              (
+                              
+                              onPressed: (){
+                                _resetFiters(widget.tcg);
+                                //Navigator.of(context).pop();
+                              }, 
+                              child:Text('Reset', style: TextStyle(color: Color(0xFF104E75), fontSize: 17)),
+                              )
+                            )
+                          ]
+                        ),
+                Expanded(
+                  child: SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: 
+              widget.tcg == 'cardsOpcg'
+            ? [
+                _buildFilterSection('Colors', widget.colorsOp, widget.selectedColors),
+                _buildFilterSection('Card Type', widget.cardTypeOpcg, widget.selectedTypeOpcg),
+                _buildFilterSection('Illustration Type', widget.illustraationTypeOpcg, widget.selectedIllustraTypeOpcg),
+                _buildFilterSection('Expansions', widget.expansionsOpcg, widget.selectedExpansionsOpcg),   
+              
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center, 
+                  crossAxisAlignment: CrossAxisAlignment.center, 
+                  children: [
+                    ElevatedButton.icon(onPressed: () => Navigator.of(context).pop(), 
+                    label: Text('Buscar', style: TextStyle(color: Color(0xFFEBEEF2))), 
+                    icon: Icon(Icons.search, color: Color(0xFFEBEEF2)), 
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF104E75),
+                    )
+                    ),
+                  ],
+                )            
+              ]
+            : widget.tcg == 'cardsPkmntcg'
+            ? [
+                _buildFilterSection('Energy Types', widget.energyTypes, widget.selectedEnergyTypes),
+                _buildFilterSection('Evolution Stage', widget.evolved, widget.selectedEvolved),
+                _buildFilterSection('Card Type', widget.cardTypePkmn, widget.selectedTypePkmn),
+                _buildFilterSection('Rarity', widget.raritiesPkmn, widget.selectedRaritiesPkmn),
+                _buildFilterSection('Expansions', widget.expansionsPkmn, widget.selectedExpansionsPkmn),
+
+                 Row(
+                  mainAxisAlignment: MainAxisAlignment.center, 
+                  crossAxisAlignment: CrossAxisAlignment.center, 
+                  children: [
+                    ElevatedButton.icon(onPressed: () => Navigator.of(context).pop(), 
+                    label: Text('Buscar', style: TextStyle(color: Color(0xFFEBEEF2))), 
+                    icon: Icon(Icons.search, color: Color(0xFFEBEEF2)), 
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF104E75),
+                    )
+                    ),
+                  ],
+                )  
+                  ]
+
+                
+            : widget.tcg == 'cardsMyl'
+              ?[
+                _buildFilterSection('Tipo de Carta', widget.cardTypeMyl, widget.selectedTypeMyl),
+                _buildFilterSection('Rareza', widget.raritiesMyl, widget.selectedRaritiesMyl),
+                _buildFilterSection('Raza', widget.raceMyl, widget.selectedRaceMyl),
+                _buildFilterSection('Expansiones', widget.expansionsMyl, widget.selectedExpansionsMyl),
+                _buildFilterSection('Costo', widget.cost, widget.selectedCost),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center, 
+                  crossAxisAlignment: CrossAxisAlignment.center, 
+                  children: [
+                    ElevatedButton.icon(onPressed: () => Navigator.of(context).pop(), 
+                    label: Text('Buscar', style: TextStyle(color: Color(0xFFEBEEF2))), 
+                    icon: Icon(Icons.search, color: Color(0xFFEBEEF2)), 
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF104E75),
+                    )
+                    ),
+                  ],
+                ) 
+              ]
+            : [],
+          
+          
+        ),
+      ),
+    )
+                ),
+              ],
+            ),
+          ), //container
+        );
+  }
+}
+
+class _AddCardsState extends State<AddCards> {
+  String searchQuery = ''; // Búsqueda de cartas
+  bool _isLoading = true;
+  
 
   List<Map<String, dynamic>> get filteredCards {
     if (searchQuery.isEmpty) {
@@ -543,65 +710,9 @@ class _AddCardsState extends State<AddCards> {
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
-                return Dialog(
-                  insetPadding: EdgeInsets.zero, // Elimina el padding predeterminado
-                  child: Container(
-                    width: double.infinity,
-                    height: double.infinity,
-                    child: Column(
-                      children: [
-                        AppBar(
-                          title: Text('Filtrar Cartas'),
-                          automaticallyImplyLeading: false,
-                          leading: 
-                          IconButton(
-                            icon: Icon(Icons.close),
-                            onPressed: () => Navigator.of(context).pop(),
-                            color: Colors.black,
-                          ),
-                
-                        ),
-                Expanded(
-                  child: SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: 
-              widget.tcg == 'cardsOpcg'
-            ? [
-                _buildFilterSection('Colors', widget.colorsOp, widget.selectedColors),
-                _buildFilterSection('Card Type', widget.cardTypeOpcg, widget.selectedTypeOpcg),
-                _buildFilterSection('Illustration Type', widget.illustraationTypeOpcg, widget.selectedIllustraTypeOpcg),
-                _buildFilterSection('Expansions', widget.expansionsOpcg, widget.selectedExpansionsOpcg),              
-              ]
-            : widget.tcg == 'cardsPkmntcg'
-            ? [
-                _buildFilterSection('Energy Types', widget.energyTypes, widget.selectedEnergyTypes),
-                _buildFilterSection('Evolution Stage', widget.evolved, widget.selectedEvolved),
-                _buildFilterSection('Card Type', widget.cardTypePkmn, widget.selectedTypePkmn),
-                _buildFilterSection('Rarity', widget.raritiesPkmn, widget.selectedRaritiesPkmn),
-                _buildFilterSection('Expansions', widget.expansionsPkmn, widget.selectedExpansionsPkmn),
-                  ]
-            : widget.tcg == 'cardsMyl'
-              ?[
-                _buildFilterSection('Tipo de Carta', widget.cardTypeMyl, widget.selectedTypeMyl),
-                _buildFilterSection('Rareza', widget.raritiesMyl, widget.selectedRaritiesMyl),
-                _buildFilterSection('Raza', widget.raceMyl, widget.selectedRaceMyl),
-                _buildFilterSection('Expansiones', widget.expansionsMyl, widget.selectedExpansionsMyl),
-                _buildFilterSection('Costo', widget.cost, widget.selectedCost),
-              ]
-            : [],
-          
-          
-        ),
-      ),
-    )
-                ),
-              ],
-            ),
-          ),
-        );
+                return MyDialog(
+                  tcg: widget.tcg,
+                ); //aqui dialogo
       },
     );
             }, icon: Icon(Icons.filter_alt), color: Color(0xFF104E75), iconSize: 30),
