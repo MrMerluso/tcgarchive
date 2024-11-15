@@ -104,6 +104,11 @@ class MyDialog extends StatefulWidget {
   ];
   final List<String> selectedCost = [];
 
+  final List<String> attack = [
+    '0', '1', '2', '3', '4', '5', '6',
+  ];
+  final List<String> selectedAttack = [];
+
   final String tcg;
 
   MyDialog({super.key,required this.tcg});
@@ -286,6 +291,8 @@ class _MyDialogState extends State<MyDialog> {
                 _buildFilterSection('Raza', widget.raceMyl, widget.selectedRaceMyl),
                 _buildFilterSection('Expansiones', widget.expansionsMyl, widget.selectedExpansionsMyl),
                 _buildFilterSection('Costo', widget.cost, widget.selectedCost),
+                _buildFilterSection('Fuerza', widget.attack, widget.selectedAttack),
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center, 
                   crossAxisAlignment: CrossAxisAlignment.center, 
