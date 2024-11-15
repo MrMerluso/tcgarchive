@@ -153,8 +153,6 @@ class MyDialog extends StatefulWidget {
   _MyDialogState createState() => _MyDialogState();
 }
 
-/* Widget para mostrar las cartas filtradas */
-
 
 
 
