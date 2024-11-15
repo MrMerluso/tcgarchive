@@ -15,6 +15,7 @@ import 'package:tcgarchive/models/cardspkmntcg_model.dart';
 import 'package:tcgarchive/controllers/filter_controller.dart';
 
 class AddCards extends StatefulWidget {
+  List<Map<String, dynamic>> availableCards = [];
   
   final String folderName; // Nombre de la carpeta
   List<Map<String, dynamic>> cards; // Lista de cartas de la db
@@ -122,39 +123,45 @@ class MyDialog extends StatefulWidget {
   final List<String> energyTypes = [
     'Grass', 'Fire', 'Water', 'Lightning', 'Psychic', 'Darkness', 'Metal', 'Dragon', 'Fighting', 'Colorless'
   ];
-  final List<String> selectedEnergyTypes = [];
+  final List<String> selectedEnergyTypes;
 
   final List<String> evolved = [
     'Basic', 'Stage 1', 'Stage 2', 'Pokemon V', 'Pokemon VSTAR'
   ];
-  final List<String> selectedEvolved = [];
+  final List<String> selectedEvolved;
 
   final List<String> cardTypePkmn = [
     'Pokemon', 'Trainer Item', 'Energy'
   ];
-  final List<String> selectedTypePkmn = [];
+  final List<String> selectedTypePkmn;
 
   final List<String> raritiesPkmn = [
     'Common', 'Uncommon', 'Rare', 'Rare Holo','Rare Holo EX', 'Rare Holo GX','Rare Holo Lv.X', 'LEGEND', 'Ultra Rare', 'Rare Prime', 'Double Rare',
     'ACE SPEC rare','Rare BREAK','Promo', 'Illustration Rare', 'Shiny Ultra Rare', 'Hyper Rare', 'Amazing', 'Radiant Rare', 'Special Illustration Rare','Shiny Rare'
   ];
-  final List<String> selectedRaritiesPkmn = [];
+  final List<String> selectedRaritiesPkmn;
 
   final List<String> expansionsPkmn = [
     'Stellar Crown', 'Shrouded Fable', 'Twilight Masquerade', 
   ];
-  final List<String> selectedExpansionsPkmn = [];
+  final List<String> selectedExpansionsPkmn;
 
   final String tcg;
 
-  MyDialog({super.key, required this.tcg});
+  //MyDialog({super.key, required this.tcg});
+
+  MyDialog({super.key, 
+    required this.tcg,
+    required this.selectedEnergyTypes,
+    required this.selectedEvolved,
+    required this.selectedTypePkmn,
+    required this.selectedRaritiesPkmn,
+    required this.selectedExpansionsPkmn,
+  });
 
   @override
   _MyDialogState createState() => _MyDialogState();
 }
-
-
-
 
 /*class _MyDialogState extends State<MyDialog> {
    final FilterController _filterController = FilterController();
@@ -271,28 +278,24 @@ Widget _buildFilterChip(String filterText, List<String> selectedList) {
   final FilterController _filterController = FilterController();
 
   // Apply Filters Method - Modify it to integrate with your Pokémon-specific query
-void _applyFilters() async {
-  print("Selected Pkmn: ${widget.selectedTypePkmn}");
-  print("Selected Energy Type: ${widget.selectedEnergyTypes}");
-  print("Selected Evolved: ${widget.selectedEvolved}");
+  Future<void> _applyFilters() async {
+    print("Selected Pkmn: ${widget.selectedTypePkmn}");
+    print("Selected Energy Type: ${widget.selectedEnergyTypes}");
+    print("Selected Evolved: ${widget.selectedEvolved}");
   
   // Now apply the filter
-  List<Map<String, dynamic>> filteredCards = await _filterController.getFilteredCards(
-    widget.tcg,
-    widget.selectedEnergyTypes,
-    widget.selectedEvolved,
-    widget.selectedTypePkmn,
-    widget.selectedRaritiesPkmn,
-    widget.selectedExpansionsPkmn,
+    List<Map<String, dynamic>> availableCards = await _filterController.getFilteredCards(
+      widget.tcg,
+      widget.selectedEnergyTypes,
+      widget.selectedEvolved,
+      widget.selectedTypePkmn,
+      widget.selectedRaritiesPkmn,
+      widget.selectedExpansionsPkmn,
   );
   
-  // Check if the filteredCards is correct
-  print("Filtered Cards: $filteredCards");
+  Navigator.pop(context, availableCards);
 
-  // Close the dialog and return the filtered data
-
-  Navigator.pop(context, filteredCards);
-}
+  }
 
   // Build Filter Chips (doesn't change)
   Widget _buildFilterChip(String filterText, List<String> selectedList) {
@@ -539,6 +542,48 @@ class _AddCardsState extends State<AddCards> {
   String searchQuery = ''; // Búsqueda de cartas
   bool _isLoading = true;
   
+
+  Future<void> _openFilterDialog() async{
+    final List<Map<String, dynamic>>? filteredCards = await showDialog<List<Map<String, dynamic>>>(
+      context: context,
+      builder: (BuildContext context) {
+        return MyDialog(
+          tcg: widget.tcg,
+          selectedEnergyTypes: [],
+          selectedEvolved: [],
+          selectedTypePkmn: [],
+          selectedRaritiesPkmn: [],
+          selectedExpansionsPkmn: [],
+        );
+      },
+    );
+
+    if (filteredCards != null) {
+      setState(() {
+        availableCards = filteredCards;
+      });
+    }
+  }
+  /*void _applyFilters() async {
+    print("Selected Pkmn: ${widget.selectedTypePkmn}");
+    print("Selected Energy Type: ${widget.selectedEnergyTypes}");
+    print("Selected Evolved: ${widget.selectedEvolved}");
+  
+  // Now apply the filter
+    List<Map<String, dynamic>> availableCards = await _filterController.getFilteredCards(
+      widget.tcg,
+      widget.selectedEnergyTypes,
+      widget.selectedEvolved,
+      widget.selectedTypePkmn,
+      widget.selectedRaritiesPkmn,
+      widget.selectedExpansionsPkmn,
+  );
+  
+  // Check if the filteredCards is correct
+  print("Filtered Cards: $availableCards");
+
+  }*/
+
 
   List<Map<String, dynamic>> get filteredCards {
     if (searchQuery.isEmpty) {
@@ -980,14 +1025,14 @@ Future<void> _searchCards(String query) async {
                 ),
             child:
             IconButton(onPressed: (){
-              showDialog(
+              /*showDialog(
                 context: context,
                 builder: (BuildContext context) {
                 return MyDialog(
-                  tcg: widget.tcg,
+                  tcg: widget.tcg, selectedEnergyTypes: [], selectedEvolved: [], selectedTypePkmn: [], selectedRaritiesPkmn: [], selectedExpansionsPkmn: [],
                 ); //aqui dialogo
-      },
-    );
+      },*/
+              _openFilterDialog();
             }, icon: Icon(Icons.filter_alt), color: Color(0xFF104E75), iconSize: 30),
             
           ),
@@ -1026,7 +1071,7 @@ Future<void> _searchCards(String query) async {
                   //final card = filteredCards[index];
                   return GestureDetector(
                     onTap: () {
-                      _showCardDetail(context, index); // Mostrar carta en grande al hacer clic
+                      //_showCardDetail(context, index); // Mostrar carta en grande al hacer clic
                     },
                     child: Stack(
                       children: [
