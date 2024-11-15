@@ -493,10 +493,19 @@ class _CardScreenState extends State<CardScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _addCard, // Navegar a la pantalla de añadir carta
-        backgroundColor: const Color(0xFF104E75), // Color del botón
-        child: Icon(Icons.add, color: Color(0xFFEBEEF2)),
-        tooltip: "Añadir carta",
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AddCards(folderName: widget.folderName, cards: [], tcg: widget.tcg, folderId: widget.folderId),
+            ),
+          );
+        }
+        
+        //_addCard, // Navegar a la pantalla de añadir carta
+        //backgroundColor: const Color(0xFF104E75), // Color del botón
+        //child: Icon(Icons.add, color: Color(0xFFEBEEF2)),
+        //tooltip: "Añadir carta",
       ),
     );
   }
