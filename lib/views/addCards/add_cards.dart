@@ -15,7 +15,7 @@ import 'package:tcgarchive/models/cardspkmntcg_model.dart';
 import 'package:tcgarchive/controllers/filter_controller.dart';
 
 class AddCards extends StatefulWidget {
-  List<Map<String, dynamic>> availableCards = [];
+  final List<Map<String, dynamic>> availableCards = [];
   
   final String folderName; // Nombre de la carpeta
   List<Map<String, dynamic>> cards; // Lista de cartas de la db
@@ -120,6 +120,10 @@ class AddCards extends StatefulWidget {
   _MyDialogState createState() => _MyDialogState();
 }*/
 class MyDialog extends StatefulWidget {
+
+  final String tcg;
+// Pokemon TCG
+
   final List<String> energyTypes = [
     'Grass', 'Fire', 'Water', 'Lightning', 'Psychic', 'Darkness', 'Metal', 'Dragon', 'Fighting', 'Colorless'
   ];
@@ -146,17 +150,81 @@ class MyDialog extends StatefulWidget {
   ];
   final List<String> selectedExpansionsPkmn;
 
-  final String tcg;
+  //OPCG
 
-  //MyDialog({super.key, required this.tcg});
+  final List<String> colorsOp = [ 
+    'Black', 'Blue', 'Red', 'Green', 'Yellow', 'Purple', 'Multicolor'
+  ];
+  final List<String> selectedColors;
+
+  final List<String> cardTypeOpcg = [
+    'Leader', 'Character', 'Event', 'Stage'
+  ];
+  final List<String> selectedTypeOpcg;
+
+  final List<String> illustrationTypeOpcg = [
+    'Comic', 'Animation', 'Original Illustration', 'Other'
+  ];
+  final List<String> selectedIllustraTypeOpcg;
+
+  final List<String> expansionsOpcg = [
+    'OP-05', 'ST-18'
+  ];
+  final List<String> selectedExpansionsOpcg;
+
+  //MYL
+
+  final List<String> cardTypeMyl = [
+     'Aliado', 'Talismán', 'Arma', 'Tótem', 'Oro'
+  ];
+  final List<String> selectedTypeMyl;
+
+  final List<String> raritiesMyl = [
+    'Vasallo', 'Cortesano', 'Real', 'Mega Real', 'Ultra Real','Legendaria', 'Promo'
+  ];
+  final List<String> selectedRaritiesMyl;
+
+  final List<String> raceMyl = [
+    'Dragón', 'Faerie', 'Caballero', 'Sacerdote', 'Eterno', 'Faraón', 
+    'Desafiante', 'Defensor', 'Sombra', 'Titán', 'Olímpico', 'Héroe'
+  ];
+  final List<String> selectedRaceMyl;
+
+  final List<String> expansionsMyl = [
+    'Espada Sagrada', 'Dominios de Ra', 'Hijos de Daana', 'Helénica' 
+  ];
+  final List<String> selectedExpansionsMyl;
+
+  final List<String> cost = [
+    '0', '1', '2', '3', '4', '5', '6'
+  ];
+  final List<String> selectedCost;
+
+  final List<String> attack = [
+    '0', '1', '2', '3', '4', '5', '6',
+  ];
+  final List<String> selectedAttack;
 
   MyDialog({super.key, 
     required this.tcg,
+    //Pokemon TCG
     required this.selectedEnergyTypes,
     required this.selectedEvolved,
     required this.selectedTypePkmn,
     required this.selectedRaritiesPkmn,
     required this.selectedExpansionsPkmn,
+    //OPCG
+    required this.selectedColors,
+    required this.selectedTypeOpcg,
+    required this.selectedIllustraTypeOpcg,
+    required this.selectedExpansionsOpcg,
+    //MYL
+    required this.selectedTypeMyl,
+    required this.selectedRaritiesMyl,
+    required this.selectedRaceMyl,
+    required this.selectedExpansionsMyl,
+    required this.selectedCost,
+    required this.selectedAttack,
   });
 
   @override
@@ -279,20 +347,50 @@ Widget _buildFilterChip(String filterText, List<String> selectedList) {
 
   // Apply Filters Method - Modify it to integrate with your Pokémon-specific query
   Future<void> _applyFilters() async {
+    List<Map<String, dynamic>> availableCards = [];
+    if(widget.tcg == 'cardsPkmntcg'){
     print("Selected Pkmn: ${widget.selectedTypePkmn}");
     print("Selected Energy Type: ${widget.selectedEnergyTypes}");
     print("Selected Evolved: ${widget.selectedEvolved}");
   
   // Now apply the filter
-    List<Map<String, dynamic>> availableCards = await _filterController.getFilteredCards(
+    availableCards = await _filterController.getFilteredPkmnCards(
       widget.tcg,
       widget.selectedEnergyTypes,
       widget.selectedEvolved,
       widget.selectedTypePkmn,
       widget.selectedRaritiesPkmn,
       widget.selectedExpansionsPkmn,
-  );
-  
+    );
+  } else if (widget.tcg == 'cardsOpcg') {
+    print("Selected Colors: ${widget.selectedColors}");
+    print("Selected Type: ${widget.selectedTypeOpcg}");
+    print("Selected Illustration Type: ${widget.selectedIllustraTypeOpcg}");
+    print("Selected Expansions: ${widget.selectedExpansionsOpcg}");
+
+    // Now apply the filter
+    availableCards = await _filterController.getFilteredOpcgCards(
+      widget.tcg,
+      widget.selectedColors,
+      widget.selectedTypeOpcg,
+      widget.selectedIllustraTypeOpcg,
+      widget.selectedExpansionsOpcg,
+    );
+  } else if (widget.tcg == 'cardsMyl') {
+    print("Selected Type: ${widget.selectedTypeMyl}");
+    print("Selected Rarities: ${widget.selectedRaritiesMyl}");
+
+    // Now apply the filter
+    availableCards = await _filterController.getFilteredMylCards(
+      widget.tcg,
+      widget.selectedTypeMyl,
+      widget.selectedRaritiesMyl,
+      widget.selectedRaceMyl,
+      widget.selectedExpansionsMyl,
+      widget.selectedCost,
+      widget.selectedAttack,
+    );
+  }
   Navigator.pop(context, availableCards);
 
   }
@@ -360,6 +458,14 @@ Widget _buildFilterChip(String filterText, List<String> selectedList) {
           widget.selectedTypePkmn.clear();
           widget.selectedRaritiesPkmn.clear();
           widget.selectedExpansionsPkmn.clear();
+          break;
+        case 'cardsMyl':
+          widget.selectedTypeMyl.clear();
+          widget.selectedRaritiesMyl.clear();
+          widget.selectedRaceMyl.clear();
+          widget.selectedExpansionsMyl.clear();
+          widget.selectedCost.clear();
+          widget.selectedAttack.clear();
           break;
         default:
           break;
@@ -523,7 +629,45 @@ Widget _buildFilterChip(String filterText, List<String> selectedList) {
                               ],
                             )
                           ]
-                        : [], // You can add more cases for other TCGs here
+                        : widget.tcg == 'cardsOpcg'
+                            ? [
+                              _buildFilterSection('Colors', widget.colorsOp, widget.selectedColors),
+                              _buildFilterSection('Card Type', widget.cardTypeOpcg, widget.selectedTypeOpcg),
+                              _buildFilterSection('Illustration Type', widget.illustrationTypeOpcg, widget.selectedIllustraTypeOpcg),
+                              _buildFilterSection('Expansions', widget.expansionsOpcg, widget.selectedExpansionsOpcg),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                ElevatedButton.icon(
+                                  onPressed: _applyFilters, // Apply filters and close dialog
+                                  label: Text('Buscar', style: TextStyle(color: Color(0xFFEBEEF2))),
+                                  icon: Icon(Icons.search, color: Color(0xFFEBEEF2)),
+                                  style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF104E75)),
+                                ),
+                              ],
+                            ),
+                          ]
+                        : widget.tcg == 'cardsMyl'
+                            ? [
+                              _buildFilterSection('Card Type', widget.cardTypeMyl, widget.selectedTypeMyl),
+                              _buildFilterSection('Rarity', widget.raritiesMyl, widget.selectedRaritiesMyl),
+                              _buildFilterSection('Race', widget.raceMyl, widget.selectedRaceMyl),
+                              _buildFilterSection('Expansions', widget.expansionsMyl, widget.selectedExpansionsMyl),
+                              _buildFilterSection('Cost', widget.cost, widget.selectedCost),
+                              _buildFilterSection('Attack', widget.attack, widget.selectedAttack),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                ElevatedButton.icon(
+                                  onPressed: _applyFilters, // Apply filters and close dialog
+                                  label: Text('Buscar', style: TextStyle(color: Color(0xFFEBEEF2))),
+                                  icon: Icon(Icons.search, color: Color(0xFFEBEEF2)),
+                                  style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF104E75)),
+                                ),
+                              ],
+                            ),
+                          ]
+                      : [], // You can add more cases for other TCGs here
                   ),
                 ),
               ),
@@ -549,11 +693,24 @@ class _AddCardsState extends State<AddCards> {
       builder: (BuildContext context) {
         return MyDialog(
           tcg: widget.tcg,
+          //Pokemon TCG
           selectedEnergyTypes: [],
           selectedEvolved: [],
           selectedTypePkmn: [],
           selectedRaritiesPkmn: [],
           selectedExpansionsPkmn: [],
+          //OPCG 
+          selectedColors: [],
+          selectedTypeOpcg: [],
+          selectedIllustraTypeOpcg: [],
+          selectedExpansionsOpcg: [],
+          //MYL
+          selectedTypeMyl: [],
+          selectedRaritiesMyl: [],
+          selectedRaceMyl: [],
+          selectedExpansionsMyl: [],
+          selectedCost: [],
+          selectedAttack: [],
         );
       },
     );
@@ -786,9 +943,13 @@ Future<void> _searchCards(String query) async {
 
   // Función para mostrar la imagen en grande con opciones de editar o eliminar
   void _showCardDetail(BuildContext context, int index) {
-    final card = widget.cards[index];
-    final TextEditingController cardPriceController = TextEditingController(text: card['price'].toString());
-    final TextEditingController cardCopiesController = TextEditingController(text: card['copies'].toString());
+    final card = availableCards[index];
+  final TextEditingController cardPriceController = TextEditingController(
+    text: card['price'] != null ? card['price'].toString() : '',
+  );
+  final TextEditingController cardCopiesController = TextEditingController(
+    text: card['copies'] != null ? card['copies'].toString() : '0',
+  );
 
     showDialog(
       context: context,
@@ -806,7 +967,7 @@ Future<void> _searchCards(String query) async {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(card['name'], style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                      Text(card['Nombre'], style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                       IconButton(
                         icon: Icon(Icons.close),
                         onPressed: () {
@@ -879,63 +1040,40 @@ Future<void> _searchCards(String query) async {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       TextButton(
-                        child: Text('Eliminar', style: TextStyle(color: Colors.red)),
-                        onPressed: () {
+                      child: Text('Agregar a la carpeta'),
+                      onPressed: () {
+                        int? newCopies = int.tryParse(cardCopiesController.text);
+                        if (newCopies == null || newCopies <= 0) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Cantidad debe ser un número entero mayor que 0.'),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                          return;
+                        }
 
-                          showDialog(
-                            context: context, 
-                            builder: (BuildContext context){
-                              return AlertDialog(
-                                title: Text('Eliminar ${card['name']}'),
-                                content: RichText(text: TextSpan(
-                                  text: 'La carta se borrará permanentemente de esta carpeta y tendrás que agregarla nuevamente, ¿Estás seguro de eliminar ',
-                                  style: TextStyle(color: Colors.black),
-                                  children: [
-                                    TextSpan(text: '${card['name']}?', style: TextStyle(fontWeight: FontWeight.bold)),
-                                  ]
-                                )),
-                                actions: [
-                                  TextButton(
-                                    child: Text('Cancelar'),
-                                    onPressed: () {
-                                      Navigator.of(context).pop(); // Cerrar el diálogo
-                                    },
-                                  ),
-                                  TextButton(
-                                    child: Text('Eliminar'),
-                                    onPressed: () {
-                                      setState(() {
-                                        widget.cards.removeAt(index);
-                                      });
-                                      FoldersController().deleteCardInFolder(card["id"], widget.folderId!);
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(
-                                          behavior: SnackBarBehavior.floating,
-                                          margin: EdgeInsets.only(
-                                            bottom: 10.0, // Ajusta este valor para la distancia deseada del FAB
-                                            left: 16.0,
-                                            right: 16.0,
-                                          ),
-                                          duration: Duration(milliseconds: 1500),
-                                          content: Text('Carta eliminada', style: TextStyle(color: Colors.white)),
-                                          backgroundColor: Colors.red,
-                                        ),
-                                      ); // Eliminar la carta
-                                      Navigator.of(context).pop();
-                                      Navigator.of(context).pop(); // Cerrar el diálogo
-                                    },
-                                  ),
-                                ],
-                              );
-                            });
-                          //Navigator.of(context).pop(); // Cerrar el diálogo
-                        },
-                      ),
+                        setState(() {
+                          widget.cards[index]['price'] = cardPriceController.text.isNotEmpty
+                              ? int.tryParse(cardPriceController.text) ?? 0
+                              : null;
+                          widget.cards[index]['copies'] = newCopies;
+                        });
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Cambios guardados'),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
+
+                        Navigator.of(context).pop(); // Close the dialog
+                    /*children: [
                       TextButton(
-                        child: Text('Guardar'),
+                        child: Text('Agregar a la carpeta'),
                         onPressed: () {
                           setState(() {
-
+                            
                             widget.cards[index]['price'] = int.tryParse(cardPriceController.text) ?? 0.0;
                             widget.cards[index]['copies'] = int.tryParse(cardCopiesController.text) ?? 0;
                             FoldersController().updateCardInFolder(card["id"], widget.folderId!, card["copies"], card["price"]);
@@ -953,7 +1091,7 @@ Future<void> _searchCards(String query) async {
                                 backgroundColor: Colors.green,
                               ),
                             );
-                          Navigator.of(context).pop(); // Guardar cambios y cerrar el diálogo
+                          Navigator.of(context).pop(); // Guardar cambios y cerrar el diálogo*/
                         },
                       ),
                     ],
@@ -1025,13 +1163,6 @@ Future<void> _searchCards(String query) async {
                 ),
             child:
             IconButton(onPressed: (){
-              /*showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                return MyDialog(
-                  tcg: widget.tcg, selectedEnergyTypes: [], selectedEvolved: [], selectedTypePkmn: [], selectedRaritiesPkmn: [], selectedExpansionsPkmn: [],
-                ); //aqui dialogo
-      },*/
               _openFilterDialog();
             }, icon: Icon(Icons.filter_alt), color: Color(0xFF104E75), iconSize: 30),
             
@@ -1071,7 +1202,7 @@ Future<void> _searchCards(String query) async {
                   //final card = filteredCards[index];
                   return GestureDetector(
                     onTap: () {
-                      //_showCardDetail(context, index); // Mostrar carta en grande al hacer clic
+                      _showCardDetail(context, index); // Mostrar carta en grande al hacer clic
                     },
                     child: Stack(
                       children: [
@@ -1083,30 +1214,8 @@ Future<void> _searchCards(String query) async {
                                 fit: BoxFit.cover,
                               ),
                             ),
-                          //card['price'] != 0
-                            //? 
-                            //Padding(
-                                //padding: const EdgeInsets.all(8.0),
-                                //child: Text(
-                                  //'\$${card['price']}',
-                                  //style: TextStyle(fontSize: 16, color: Colors.black),
-                                  //),
-                                //)
-                            //: SizedBox.shrink(),
                         ],
                       ),
-                      //Positioned(
-                          //bottom: 40,
-                          //right: 10,
-                          //child: CircleAvatar(
-                            //radius: 16,
-                            //backgroundColor: Colors.white,
-                            //child: Text(
-                              //'x${card['copies']}',
-                              //style: TextStyle(color: Color(0xFF6194B8), fontSize: 14),
-                            //),
-                          //),
-                        //),
                       ],
                     ),
                   );
