@@ -493,6 +493,8 @@ class _CardScreenState extends State<CardScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color(0xFF104E75),
+        child: Icon(Icons.add, color: Color(0xFFEBEEF2)),
         onPressed: () {
           Navigator.push(
             context,

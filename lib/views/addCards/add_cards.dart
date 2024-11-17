@@ -23,6 +23,8 @@ class AddCards extends StatefulWidget {
   final String? folderId;
   final FoldersController _foldersController = FoldersController();
 
+   
+
   AddCards({super.key, required this.folderName, required this.cards, required this.tcg, required this.folderId});
 
 
@@ -120,6 +122,8 @@ class AddCards extends StatefulWidget {
   _MyDialogState createState() => _MyDialogState();
 }*/
 class MyDialog extends StatefulWidget {
+
+  final Future<void> Function() fetchCards;
 
   final String tcg;
 // Pokemon TCG
@@ -225,6 +229,7 @@ class MyDialog extends StatefulWidget {
     required this.selectedExpansionsMyl,
     required this.selectedCost,
     required this.selectedAttack,
+    required this.fetchCards
   });
 
   @override
@@ -343,6 +348,7 @@ Widget _buildFilterChip(String filterText, List<String> selectedList) {
   }*/
  
  class _MyDialogState extends State<MyDialog> {
+
   final FilterController _filterController = FilterController();
 
   // Apply Filters Method - Modify it to integrate with your Pokémon-specific query
@@ -394,6 +400,7 @@ Widget _buildFilterChip(String filterText, List<String> selectedList) {
   Navigator.pop(context, availableCards);
 
   }
+  
 
   // Build Filter Chips (doesn't change)
   Widget _buildFilterChip(String filterText, List<String> selectedList) {
@@ -470,7 +477,9 @@ Widget _buildFilterChip(String filterText, List<String> selectedList) {
         default:
           break;
       }
+      _applyFilters();
     });
+    
   }
  
  /*@override
@@ -710,8 +719,8 @@ class _AddCardsState extends State<AddCards> {
           selectedRaceMyl: [],
           selectedExpansionsMyl: [],
           selectedCost: [],
-          selectedAttack: [],
-        );
+          selectedAttack: [], 
+          fetchCards: _fetchCards,);
       },
     );
 
