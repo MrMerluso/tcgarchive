@@ -5,7 +5,6 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tcgarchive/views/share/carpeta_compartida.dart';
-
 import 'package:tcgarchive/controllers/folders_controller.dart';
 import 'package:tcgarchive/views/login/login.dart';
 import 'package:tcgarchive/models/folders_model.dart';
