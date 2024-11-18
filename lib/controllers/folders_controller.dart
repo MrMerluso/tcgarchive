@@ -162,15 +162,12 @@ class FoldersController {
 
     final cardInFolder = await folderRef
       .collection("Cartas")
-      .where("Carta", isEqualTo: cardRef)
-      .get();
-    
-    for (var card in cardInFolder.docs) {
-      await card.reference.update({
+      .doc(cardId)
+      .update({
         "Cantidad": ammount,
         "Precio": price,
       });
-    }
+    
   }
 
   Future<void> deleteCardInFolder(String cardIdInFolder, String folderId) async{
