@@ -619,6 +619,7 @@ Widget _buildFilterChip(String filterText, List<String> selectedList) {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: widget.tcg == 'cardsPkmntcg'
                         ? [
                             _buildFilterSection('Energy Types', widget.energyTypes, widget.selectedEnergyTypes),
