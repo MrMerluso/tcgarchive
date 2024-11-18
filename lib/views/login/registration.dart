@@ -64,6 +64,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     if (email == "" || username == "" || password == "" || repeatPassword == "") {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
+          duration: Duration(milliseconds: 1500),
           content: Text('Por favor rellena todos los campos'),
           backgroundColor: Colors.red,
         ),
@@ -75,6 +76,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       // Mostrar error si las contraseñas no coinciden
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
+          duration: Duration(milliseconds: 1500),
           content: Text('Las contraseñas no coinciden'),
           backgroundColor: Colors.red,
         ),
@@ -93,6 +95,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       if (registerMessage != "exito") {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
+            duration: Duration(milliseconds: 1500),
             content: Text(registerMessage),
             backgroundColor: Colors.red,
           ),
@@ -108,6 +111,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       // Mostrar mensaje de éxito o continuar con el proceso de registro
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
+          duration: Duration(milliseconds: 1500),
           content: Text('Cuenta creada con éxito!'),
           backgroundColor: Colors.green,
         ),

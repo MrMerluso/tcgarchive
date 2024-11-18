@@ -54,10 +54,10 @@ class FoldersController {
   }
 
 
-  Future<void> addCardToFolder(String cardId, String folderId, int ammount, int price) async{
+  Future<bool> addCardToFolder(String cardId, String folderId, int ammount, int price) async{
     if (_auth.currentUser == null) {
       print("no hay usuario autenticado");
-      return;
+      return false;
     }
 
     DocumentReference userRef = _db.collection("users").doc(_auth.currentUser?.uid);
@@ -68,19 +68,42 @@ class FoldersController {
 
     FoldersModel folder = FoldersModel.fromSnapshot(folderSnapshot);
 
+    // Revisar si la carta ya esta en la carpeta
+    
+    QuerySnapshot cardsInFolderSnapshot = await folderRef.collection("Cartas").get();
+    
+
     // final creador = folderSnapshot["Creador"];
 
     if (folderSnapshot.exists && folderSnapshot["Creador"] == userRef){
       
       DocumentReference cardRef = _db.collection(folder.tcg).doc(cardId);
+      bool cardInFolder = false;
+
+      cardsInFolderSnapshot.docs.forEach((doc) {
+        CardInFolder card = CardInFolder.fromSnapshot(doc);
+        if (card.card == cardRef) {
+          cardInFolder = true;
+          return;
+        }
+      });
+      
+      if (cardInFolder) {
+        return false;
+      }
 
       await folderRef.collection("Cartas").add({
         "Carta": cardRef,
         "Precio": price,
         "Cantidad": ammount,
       });
+      
+      
     }
+    return true;
   }
+
+  
 
   Future<List<Map<String, dynamic>>> getCardsFromFolder(String folderId) async{
     if (_auth.currentUser == null) {

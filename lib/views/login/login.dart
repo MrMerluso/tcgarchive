@@ -54,6 +54,7 @@ class _LoginPageState extends State<LoginPage> {
     if (!loginexito) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
+          duration: Duration(milliseconds: 1500),
           content: Text('Usuario o contraseña incorrectos'),
           backgroundColor: Colors.red,
         ),

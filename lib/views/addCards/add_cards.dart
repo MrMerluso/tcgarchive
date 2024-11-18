@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 import 'dart:developer';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 
@@ -199,7 +200,7 @@ class MyDialog extends StatefulWidget {
   final List<String> selectedIllustraTypeOpcg;
 
   final List<String> expansionsOpcg = [
-    'OP-05', 'ST-18'
+    'OP-05', 'OP-06', 'OP-07', 'OP-08'
   ];
   final List<String> selectedExpansionsOpcg;
 
@@ -509,109 +510,8 @@ Widget _buildFilterChip(String filterText, List<String> selectedList) {
     });
     
   }
- 
- /*@override
-  Widget build(BuildContext context) {
-    return Dialog(
-      insetPadding: EdgeInsets.zero,
-      child: Container(
-        width: double.infinity,
-        height: double.infinity,
-        child: Column(
-          children: [
-            AppBar(
-              title: Text('Filtrar Cartas'),
-              automaticallyImplyLeading: false,
-              leading: IconButton(
-                icon: Icon(Icons.close),
-                onPressed: () => Navigator.of(context).pop(),
-                color: Colors.black,
-              ),
-              actions: [
-                Padding(
-                  padding: EdgeInsets.only(right: 10.0),
-                  child: TextButton(
-                    onPressed: () {
-                      _resetFiters(widget.tcg);
-                    },
-                    child: Text('Reset', style: TextStyle(color: Color(0xFF104E75), fontSize: 17)),
-                  ),
-                )
-              ],
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: widget.tcg == 'cardsOpcg'
-                        ? [
-                            _buildFilterSection('Colors', widget.colorsOp, widget.selectedColors),
-                            _buildFilterSection('Card Type', widget.cardTypeOpcg, widget.selectedTypeOpcg),
-                            _buildFilterSection('Illustration Type', widget.illustraationTypeOpcg, widget.selectedIllustraTypeOpcg),
-                            _buildFilterSection('Expansions', widget.expansionsOpcg, widget.selectedExpansionsOpcg),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                ElevatedButton.icon(
-                                  onPressed: _applyFilters,  // Apply filters and close dialog
-                                  label: Text('Buscar', style: TextStyle(color: Color(0xFFEBEEF2))),
-                                  icon: Icon(Icons.search, color: Color(0xFFEBEEF2)),
-                                  style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF104E75)),
-                                ),
-                              ],
-                            )
-                          ]
-                        : widget.tcg == 'cardsPkmntcg'
-                            ? [
-                                _buildFilterSection('Energy Types', widget.energyTypes, widget.selectedEnergyTypes),
-                                _buildFilterSection('Evolution Stage', widget.evolved, widget.selectedEvolved),
-                                _buildFilterSection('Card Type', widget.cardTypePkmn, widget.selectedTypePkmn),
-                                _buildFilterSection('Rarity', widget.raritiesPkmn, widget.selectedRaritiesPkmn),
-                                _buildFilterSection('Expansions', widget.expansionsPkmn, widget.selectedExpansionsPkmn),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    ElevatedButton.icon(
-                                      onPressed: _applyFilters,  // Apply filters and close dialog
-                                      label: Text('Buscar', style: TextStyle(color: Color(0xFFEBEEF2))),
-                                      icon: Icon(Icons.search, color: Color(0xFFEBEEF2)),
-                                      style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF104E75)),
-                                    ),
-                                  ],
-                                )
-                              ]
-                            : widget.tcg == 'cardsMyl'
-                                ? [
-                                    _buildFilterSection('Tipo de Carta', widget.cardTypeMyl, widget.selectedTypeMyl),
-                                    _buildFilterSection('Rareza', widget.raritiesMyl, widget.selectedRaritiesMyl),
-                                    _buildFilterSection('Raza', widget.raceMyl, widget.selectedRaceMyl),
-                                    _buildFilterSection('Expansiones', widget.expansionsMyl, widget.selectedExpansionsMyl),
-                                    _buildFilterSection('Costo', widget.cost, widget.selectedCost),
-                                    _buildFilterSection('Fuerza', widget.attack, widget.selectedAttack),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        ElevatedButton.icon(
-                                          onPressed: _applyFilters,  // Apply filters and close dialog
-                                          label: Text('Buscar', style: TextStyle(color: Color(0xFFEBEEF2))),
-                                          icon: Icon(Icons.search, color: Color(0xFFEBEEF2)),
-                                          style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF104E75)),
-                                        ),
-                                      ],
-                                    ),
-                                  ]
-                                : [],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}*/
+
+  
 
  @override
   Widget build(BuildContext context) {
@@ -919,66 +819,6 @@ Future<void> _searchCards(String query) async {
   }
 }
 
-
-  void _addCardtoFolder() async {
-    final Map<String, dynamic>? newCard = await showDialog<Map<String, dynamic>>(
-      context: context,
-      builder: (BuildContext context) {
-        final TextEditingController cardNameController = TextEditingController();
-        final TextEditingController cardCopiesController = TextEditingController();
-        final TextEditingController cardPriceController = TextEditingController();
-
-        return AlertDialog(
-          title: Text('Agregar Nueva Carta'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: cardNameController,
-                decoration: InputDecoration(hintText: 'Nombre de la carta'),
-              ),
-              TextField(
-                controller: cardCopiesController,
-                decoration: InputDecoration(hintText: 'Cantidad de copias'),
-                keyboardType: TextInputType.number,
-              ),
-              TextField(
-                controller: cardPriceController,
-                decoration: InputDecoration(hintText: 'Precio de la carta'),
-                keyboardType: TextInputType.number,
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              child: Text('Cancelar'),
-              onPressed: () {
-                Navigator.of(context).pop(); // Cerrar sin nada
-              },
-            ),
-            TextButton(
-              child: Text('Agregar'),
-              onPressed: () {
-                String name = cardNameController.text;
-                int copies = int.tryParse(cardCopiesController.text) ?? 0;
-                double price = double.tryParse(cardPriceController.text) ?? 0.0;
-                if (name.isNotEmpty && copies > 0) {
-                  Navigator.of(context).pop({'name': name, 'copies': copies, 'price': price}); // Pasar datos de la carta
-                }
-              },
-            ),
-          ],
-        );
-      },
-    );
-
-    if (newCard != null) {
-      setState(() {
-        widget.cards.add(newCard); // Agregar nueva carta a la lista
-      });
-    }
-  }
-
   // Función para mostrar la imagen en grande con opciones de editar o eliminar
   void _showCardDetail(BuildContext context, int index) {
     final card = availableCards[index];
@@ -1020,10 +860,19 @@ Future<void> _searchCards(String query) async {
                   Container(
                     height: 500, // Tamaño de la imagen ampliada
                     color: Colors.grey[300], // Placeholder de la imagen
-                    child: Image.network(
-                      card['Imagen'], // Imagen de la carta
-                      fit: BoxFit.cover,
-                    )
+                    child: CachedNetworkImage(
+                                imageUrl: card['Imagen'],
+                                placeholder: (context, url) => Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    CircularProgressIndicator(),
+                                    SizedBox(height: 10),
+                                    Text("Cargando..."),
+                                  ],
+                                ),
+                                errorWidget: (context, url, error) => Icon(Icons.error),
+                                fit: BoxFit.cover,
+                              )
                   ),
                   SizedBox(height: 20),
                   // Campos para editar el precio y las copias con etiquetas
@@ -1033,7 +882,7 @@ Future<void> _searchCards(String query) async {
                       Expanded(
                         child: TextField(
                           controller: cardPriceController,
-                          decoration: InputDecoration(hintText: 'Precio de la carta'),
+                          decoration: InputDecoration(hintText: '0'),
                           keyboardType: TextInputType.number,
                         ),
                       ),
@@ -1111,13 +960,39 @@ Future<void> _searchCards(String query) async {
                       TextButton(
                         child: Text('Agregar a la carpeta'),
                         onPressed: () {
+                          int? newCopies = int.tryParse(cardCopiesController.text);
+                          if (newCopies == null || newCopies <= 0) {
+
+                            showDialog(
+                            context: context, 
+                            builder: (BuildContext context){
+                              return AlertDialog(
+                                title: Text('Error'),
+                                content: RichText(text: TextSpan(
+                                  text: 'La cantidad debe ser mayor que 0.',
+                                  style: TextStyle(color: Colors.black),
+                                )),
+                                actions: [
+                                  TextButton(
+                                    child: Text('Ok'),
+                                    onPressed: () {
+                                      Navigator.of(context).pop(); // Cerrar el diálogo
+                                    },
+                                  ),
+                                ],
+                              );
+                            });
+
+                            return;
+                          }
+
                           setState(() {
                             
                             card['price'] = int.tryParse(cardPriceController.text) ?? 0;
                             card['copies'] = int.tryParse(cardCopiesController.text) ?? 0;
-                            FoldersController().addCardToFolder(card["id"], widget.folderId!, card["copies"], card["price"]);
+                            _addCardToDatabase(card["id"], widget.folderId!, card["copies"], card["price"]);
                           });
-                            ScaffoldMessenger.of(context).showSnackBar(
+                            /* ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 behavior: SnackBarBehavior.floating,
                                 margin: EdgeInsets.only(
@@ -1129,8 +1004,9 @@ Future<void> _searchCards(String query) async {
                                 content: Text('Se agrego correctamente', style: TextStyle(color: Colors.white)),
                                 backgroundColor: Colors.green,
                               ),
-                            );
+                            ); */
                           Navigator.of(context).pop(); // Guardar cambios y cerrar el diálogo
+                          
                         },
                       ),
                     ],
@@ -1144,6 +1020,43 @@ Future<void> _searchCards(String query) async {
     );
 
 
+  }
+
+  Future<void> _addCardToDatabase(cardId, folderId, cantidad, precio) async{
+
+   bool canAddCard = await FoldersController().addCardToFolder(cardId, folderId, cantidad, precio);
+   if(!canAddCard){
+    await showDialog(
+      context: context, 
+      builder: (BuildContext context){
+        return AlertDialog(
+          title: Text('Error'),
+          content: RichText(text: TextSpan(
+            text: 'Esta carta ya está en tu carpeta.',
+            style: TextStyle(color: Colors.black),
+          )),
+          actions: [
+            TextButton(
+              child: Text('Ok'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Cerrar el diálogo
+              },
+            ),
+          ],
+        );
+      }
+    );
+    return;
+   }
+
+   ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(
+      duration: Duration(milliseconds: 1500),
+      content: Text('Se agrego correctamente', style: TextStyle(color: Colors.white)),
+      backgroundColor: Colors.green,
+    ),
+  );
+    
   }
 
   String _titleName(String tcg){
@@ -1249,8 +1162,17 @@ Future<void> _searchCards(String query) async {
                         Column(
                           children: [
                             Expanded(
-                              child: Image.network(
-                                card['Imagen'], // Imagen de la carta
+                              child: CachedNetworkImage(
+                                imageUrl: card['Imagen'],
+                                placeholder: (context, url) => Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    CircularProgressIndicator(),
+                                    SizedBox(height: 10),
+                                    Text("Cargando..."),
+                                  ],
+                                ),
+                                errorWidget: (context, url, error) => Icon(Icons.error),
                                 fit: BoxFit.cover,
                               ),
                             ),

@@ -220,24 +220,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 )
               ),
             ),
-            ListTile(
-              leading: Icon(Icons.edit),
-              title: Text('Editar perfil'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => SearchFolder(),
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.password),
-              title: Text('Cambiar contraseña'),
-              onTap: _createNewFolder, // Llamar a la función de crear carpeta
-            ),
-            Spacer(), // Empuja la opción final hacia abajo
+            // Empuja la opción final hacia abajo
             ListTile(
               leading: Icon(Icons.logout),
               title: Text('Cerrar sesión'),
@@ -360,9 +343,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ]),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context) => SelectTcgScreen()));
-        },
+        onPressed: _createNewFolder,
         backgroundColor: const Color(0xFF104E75), // Color del botón
         child: Icon(Icons.add, color: Color(0xFFEBEEF2)),
         tooltip: 'Añadir carpeta',

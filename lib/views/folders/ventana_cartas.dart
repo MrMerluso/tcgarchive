@@ -1,4 +1,5 @@
 // ignore_for_file: prefer_const_constructors
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 
@@ -214,10 +215,19 @@ class _CardScreenState extends State<CardScreen> {
                   Container(
                     height: 500, // Tamaño de la imagen ampliada
                     color: Colors.grey[300], // Placeholder de la imagen
-                    child: Image.network(
-                      card['Imagen'], // Imagen de la carta
+                    child: CachedNetworkImage(
+                      imageUrl: card['Imagen'],
+                      placeholder: (context, url) => Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CircularProgressIndicator(),
+                          SizedBox(height: 10),
+                          Text("Cargando..."),
+                        ],
+                      ),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
                       fit: BoxFit.cover,
-                    )
+                    ),
                   ),
                   SizedBox(height: 20),
                   // Campos para editar el precio y las copias con etiquetas
@@ -368,7 +378,25 @@ class _CardScreenState extends State<CardScreen> {
   @override
   void initState() {
     super.initState();
+    // _fetchCards();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     _fetchCards();
+  }
+
+  void _addCardToFolder() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddCards(folderName: widget.folderName, cards: [], tcg: widget.tcg, folderId: widget.folderId),
+      ),
+    );
+    setState(() {
+      _fetchCards();
+    });
   }
 
   @override
@@ -454,8 +482,17 @@ class _CardScreenState extends State<CardScreen> {
                         Column(
                           children: [
                             Expanded(
-                              child: Image.network(
-                                card['Imagen'], // Imagen de la carta
+                              child: CachedNetworkImage(
+                                imageUrl: card['Imagen'],
+                                placeholder: (context, url) => Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    CircularProgressIndicator(),
+                                    SizedBox(height: 10),
+                                    Text("Cargando..."),
+                                  ],
+                                ),
+                                errorWidget: (context, url, error) => Icon(Icons.error),
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -495,14 +532,7 @@ class _CardScreenState extends State<CardScreen> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color(0xFF104E75),
         child: Icon(Icons.add, color: Color(0xFFEBEEF2)),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AddCards(folderName: widget.folderName, cards: [], tcg: widget.tcg, folderId: widget.folderId),
-            ),
-          );
-        }
+        onPressed: _addCardToFolder
         
         //_addCard, // Navegar a la pantalla de añadir carta
         //backgroundColor: const Color(0xFF104E75), // Color del botón
