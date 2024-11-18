@@ -922,7 +922,7 @@ Future<void> _searchCards(String query) async {
                   ),
                   // Aquí mostrarías la imagen grande de la carta
                   Container(
-                    height: 500, // Tamaño de la imagen ampliada
+                    height: 450, // Tamaño de la imagen ampliada
                     color: Colors.grey[300], // Placeholder de la imagen
                     child: CachedNetworkImage(
                                 imageUrl: card['Imagen'],
