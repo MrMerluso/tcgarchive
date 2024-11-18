@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
+import 'package:provider/provider.dart';
 import 'package:tcgarchive/controllers/filter_controller.dart';
 import 'package:tcgarchive/controllers/folders_controller.dart';
 import 'package:tcgarchive/models/cardsmyl_model.dart';
@@ -15,6 +16,108 @@ import 'package:tcgarchive/models/cardsopcg_model.dart';
 import 'package:tcgarchive/models/cardspkmntcg_model.dart';
 import 'package:tcgarchive/controllers/filter_controller.dart';
 
+
+class FilterProvider extends ChangeNotifier {
+  // Select Pkmn
+  final List<String> selectedEnergyTypes = [];
+  final List<String> selectedEvolved = [];
+  final List<String> selectedTypePkmn = [];
+  final List<String> selectedRaritiesPkmn = [];
+  final List<String> selectedExpansionsPkmn = [];
+
+  // Select Opcg
+  final List<String> selectedColors = [];
+  final List<String> selectedTypeOpcg = [];
+  final List<String> selectedIllustraTypeOpcg = [];
+  final List<String> selectedExpansionsOpcg = [];
+
+  // Select Myl
+  final List<String> selectedTypeMyl = [];
+  final List<String> selectedRaritiesMyl = [];
+  final List<String> selectedRaceMyl = [];
+  final List<String> selectedExpansionsMyl = [];
+  final List<String> selectedCost = [];
+  final List<String> selectedAttack = [];
+
+  // Add item to a list
+  void addToList(String listName, String value) {
+    final list = _getListByName(listName);
+    if (list != null && !list.contains(value)) {
+      list.add(value);
+      notifyListeners();
+    }
+  }
+
+  // Remove item from a list
+  void removeFromList(String listName, String value) {
+    final list = _getListByName(listName);
+    if (list != null && list.contains(value)) {
+      list.remove(value);
+      notifyListeners();
+    }
+  }
+
+  // Clear all lists
+  void clearAllLists() {
+    selectedEnergyTypes.clear();
+    selectedEvolved.clear();
+    selectedTypePkmn.clear();
+    selectedRaritiesPkmn.clear();
+    selectedExpansionsPkmn.clear();
+
+    selectedColors.clear();
+    selectedTypeOpcg.clear();
+    selectedIllustraTypeOpcg.clear();
+    selectedExpansionsOpcg.clear();
+
+    selectedTypeMyl.clear();
+    selectedRaritiesMyl.clear();
+    selectedRaceMyl.clear();
+    selectedExpansionsMyl.clear();
+    selectedCost.clear();
+    selectedAttack.clear();
+
+    notifyListeners();
+  }
+
+  // Helper to get a list by name
+  List<String>? _getListByName(String listName) {
+    switch (listName) {
+      case 'selectedEnergyTypes':
+        return selectedEnergyTypes;
+      case 'selectedEvolved':
+        return selectedEvolved;
+      case 'selectedTypePkmn':
+        return selectedTypePkmn;
+      case 'selectedRaritiesPkmn':
+        return selectedRaritiesPkmn;
+      case 'selectedExpansionsPkmn':
+        return selectedExpansionsPkmn;
+      case 'selectedColors':
+        return selectedColors;
+      case 'selectedTypeOpcg':
+        return selectedTypeOpcg;
+      case 'selectedIllustraTypeOpcg':
+        return selectedIllustraTypeOpcg;
+      case 'selectedExpansionsOpcg':
+        return selectedExpansionsOpcg;
+      case 'selectedTypeMyl':
+        return selectedTypeMyl;
+      case 'selectedRaritiesMyl':
+        return selectedRaritiesMyl;
+      case 'selectedRaceMyl':
+        return selectedRaceMyl;
+      case 'selectedExpansionsMyl':
+        return selectedExpansionsMyl;
+      case 'selectedCost':
+        return selectedCost;
+      case 'selectedAttack':
+        return selectedAttack;
+      default:
+        return null;
+    }
+  }
+}
 class AddCards extends StatefulWidget {
   final List<Map<String, dynamic>> availableCards = [];
   
@@ -24,29 +127,6 @@ class AddCards extends StatefulWidget {
   final String? folderId;
   final FoldersController _foldersController = FoldersController();
 
-
-  //Select Pkmn
-  final List<String> selectedEnergyTypes = [];
-  final List<String> selectedEvolved = [];
-  final List<String> selectedTypePkmn = [];
-  final List<String> selectedRaritiesPkmn = [];
-  final List<String> selectedExpansionsPkmn = [];
-
-  //Select Opcg
-  final List<String> selectedColors = [];
-  final List<String> selectedTypeOpcg = [];
-  final List<String> selectedIllustraTypeOpcg = [];
-  final List<String> selectedExpansionsOpcg = [];
-
-  //Select Myl
-  final List<String> selectedTypeMyl = [];
-  final List<String> selectedRaritiesMyl = [];
-  final List<String> selectedRaceMyl = [];
-  final List<String> selectedExpansionsMyl = [];
-  final List<String> selectedCost = [];
-  final List<String> selectedAttack = [];
-
-   
 
   AddCards({
     super.key, 
@@ -384,6 +464,7 @@ Widget _buildFilterChip(String filterText, List<String> selectedList) {
   // Apply Filters Method - Modify it to integrate with your Pokémon-specific query
   Future<void> _applyFilters() async {
     List<Map<String, dynamic>> availableCards = [];
+    final filterProvider = Provider.of<FilterProvider>(context, listen: false);
     if(widget.tcg == 'cardsPkmntcg'){
     print("Selected Pkmn: ${widget.selectedTypePkmn}");
     print("Selected Energy Type: ${widget.selectedEnergyTypes}");
@@ -392,11 +473,11 @@ Widget _buildFilterChip(String filterText, List<String> selectedList) {
   // Now apply the filter
     availableCards = await _filterController.getFilteredPkmnCards(
       widget.tcg,
-      widget.selectedEnergyTypes,
-      widget.selectedEvolved,
-      widget.selectedTypePkmn,
-      widget.selectedRaritiesPkmn,
-      widget.selectedExpansionsPkmn,
+      filterProvider.selectedEnergyTypes,
+      filterProvider.selectedEvolved,
+      filterProvider.selectedTypePkmn,
+      filterProvider.selectedRaritiesPkmn,
+      filterProvider.selectedExpansionsPkmn,
     );
   } else if (widget.tcg == 'cardsOpcg') {
     print("Selected Colors: ${widget.selectedColors}");
@@ -407,10 +488,10 @@ Widget _buildFilterChip(String filterText, List<String> selectedList) {
     // Now apply the filter
     availableCards = await _filterController.getFilteredOpcgCards(
       widget.tcg,
-      widget.selectedColors,
-      widget.selectedTypeOpcg,
-      widget.selectedIllustraTypeOpcg,
-      widget.selectedExpansionsOpcg,
+      filterProvider.selectedColors,
+      filterProvider.selectedTypeOpcg,
+      filterProvider.selectedIllustraTypeOpcg,
+      filterProvider.selectedExpansionsOpcg,
     );
   } else if (widget.tcg == 'cardsMyl') {
     print("Selected Type: ${widget.selectedTypeMyl}");
@@ -419,12 +500,12 @@ Widget _buildFilterChip(String filterText, List<String> selectedList) {
     // Now apply the filter
     availableCards = await _filterController.getFilteredMylCards(
       widget.tcg,
-      widget.selectedTypeMyl,
-      widget.selectedRaritiesMyl,
-      widget.selectedRaceMyl,
-      widget.selectedExpansionsMyl,
-      widget.selectedCost,
-      widget.selectedAttack,
+      filterProvider.selectedTypeMyl,
+      filterProvider.selectedRaritiesMyl,
+      filterProvider.selectedRaceMyl,
+      filterProvider.selectedExpansionsMyl,
+      filterProvider.selectedCost,
+      filterProvider.selectedAttack,
     );
     }
     Navigator.pop(context, availableCards);
@@ -432,7 +513,9 @@ Widget _buildFilterChip(String filterText, List<String> selectedList) {
   
 
   // Build Filter Chips (doesn't change)
-  Widget _buildFilterChip(String filterText, List<String> selectedList) {
+  Widget _buildFilterChip(BuildContext context, String filterText, String listName) {
+    final filterprovider = Provider.of<FilterProvider>(context);
+    final selectedList = filterprovider._getListByName(listName)??[];
     final isSelected = selectedList.contains(filterText);
     return FilterChip(
       label: Text(
@@ -442,15 +525,15 @@ Widget _buildFilterChip(String filterText, List<String> selectedList) {
         ),
       ),
       checkmarkColor: Color(0xFFEBEEF2),
-      selected: selectedList.contains(filterText),
+      selected: isSelected,
       backgroundColor: Colors.grey[200],
       selectedColor:  Color(0xFF6194E2),
       onSelected: (bool selected) {
         setState(() {
           if (selected) {
-            selectedList.add(filterText);
+            filterprovider.addToList(listName, filterText);
           } else {
-            selectedList.remove(filterText);
+            filterprovider.removeFromList(listName, filterText);
           }
         });
       },
@@ -458,7 +541,8 @@ Widget _buildFilterChip(String filterText, List<String> selectedList) {
   }
 
   // Build Filter Section (doesn't change)
-  Widget _buildFilterSection(String title, List<String> items, List<String> selectedList) {
+  Widget _buildFilterSection(BuildContext context ,String title, List<String> items, String selectedList) {
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -470,51 +554,23 @@ Widget _buildFilterChip(String filterText, List<String> selectedList) {
         Wrap(
           spacing: 8, // Horizontal spacing between chips
           runSpacing: 8, // Vertical spacing between rows of chips
-          children: items.map((item) => _buildFilterChip(item, selectedList)).toList(),
+          children: items.map((item) => _buildFilterChip(context, item, selectedList)).toList(),
         ),
         SizedBox(height: 16),
       ],
     );
   }
-
   // Reset Filters
-  void _resetFiters(String tcg) {
-    setState(() {
-      switch (tcg) {
-        case 'cardsOpcg':
-          widget.selectedEnergyTypes.clear();
-          widget.selectedEvolved.clear();
-          widget.selectedTypePkmn.clear();
-          widget.selectedRaritiesPkmn.clear();
-          widget.selectedExpansionsPkmn.clear();
-          break;
-        case 'cardsPkmntcg':
-          widget.selectedEnergyTypes.clear();
-          widget.selectedEvolved.clear();
-          widget.selectedTypePkmn.clear();
-          widget.selectedRaritiesPkmn.clear();
-          widget.selectedExpansionsPkmn.clear();
-          break;
-        case 'cardsMyl':
-          widget.selectedTypeMyl.clear();
-          widget.selectedRaritiesMyl.clear();
-          widget.selectedRaceMyl.clear();
-          widget.selectedExpansionsMyl.clear();
-          widget.selectedCost.clear();
-          widget.selectedAttack.clear();
-          break;
-        default:
-          break;
-      }
-      _applyFilters();
-    });
-    
-  }
-
+  void _resetFiters(String tcg) async {
+  final filterProvider = Provider.of<FilterProvider>(context, listen: false);
+  filterProvider.clearAllLists();
+  _applyFilters();
   
+  }
 
  @override
   Widget build(BuildContext context) {
+    final filterProvider = Provider.of<FilterProvider>(context);
     return Dialog(
       insetPadding: EdgeInsets.zero,
       child: Container(
@@ -527,7 +583,10 @@ Widget _buildFilterChip(String filterText, List<String> selectedList) {
               automaticallyImplyLeading: false,
               leading: IconButton(
                 icon: Icon(Icons.close),
-                onPressed: () => Navigator.of(context).pop(),
+                onPressed: () {
+                filterProvider.clearAllLists();
+                Navigator.of(context).pop();
+                } ,
                 color: Colors.black,
               ),
               actions: [
@@ -535,6 +594,11 @@ Widget _buildFilterChip(String filterText, List<String> selectedList) {
                   padding: EdgeInsets.only(right: 10.0),
                   child: TextButton(
                     onPressed: () {
+                       // Close dialog and return empty list
+                      /* setState(() {
+                        // Reset filters
+                        filterProvider.clearAllLists();
+                      }); */
                       _resetFiters(widget.tcg);
                     },
                     child: Text('Reset', style: TextStyle(color: Color(0xFF104E75), fontSize: 17)),
@@ -550,11 +614,11 @@ Widget _buildFilterChip(String filterText, List<String> selectedList) {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: widget.tcg == 'cardsPkmntcg'
                         ? [
-                            _buildFilterSection('Energy Types', widget.energyTypes, widget.selectedEnergyTypes),
-                            _buildFilterSection('Evolution Stage', widget.evolved, widget.selectedEvolved),
-                            _buildFilterSection('Card Type', widget.cardTypePkmn, widget.selectedTypePkmn),
-                            _buildFilterSection('Rarity', widget.raritiesPkmn, widget.selectedRaritiesPkmn),
-                            _buildFilterSection('Expansions', widget.expansionsPkmn, widget.selectedExpansionsPkmn),
+                            _buildFilterSection(context,'Energy Types', widget.energyTypes, "selectedEnergyTypes"),
+                            _buildFilterSection(context,'Evolution Stage', widget.evolved, "selectedEvolved"),
+                            _buildFilterSection(context,'Card Type', widget.cardTypePkmn, "selectedTypePkmn"),
+                            _buildFilterSection(context,'Rarity', widget.raritiesPkmn, "selectedRaritiesPkmn"),
+                            _buildFilterSection(context,'Expansions', widget.expansionsPkmn, "selectedExpansionsPkmn"),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -569,10 +633,10 @@ Widget _buildFilterChip(String filterText, List<String> selectedList) {
                           ]
                         : widget.tcg == 'cardsOpcg'
                             ? [
-                              _buildFilterSection('Colors', widget.colorsOp, widget.selectedColors),
-                              _buildFilterSection('Card Type', widget.cardTypeOpcg, widget.selectedTypeOpcg),
-                              _buildFilterSection('Illustration Type', widget.illustrationTypeOpcg, widget.selectedIllustraTypeOpcg),
-                              _buildFilterSection('Expansions', widget.expansionsOpcg, widget.selectedExpansionsOpcg),
+                              _buildFilterSection(context,'Colors', widget.colorsOp, "selectedColors"),
+                              _buildFilterSection(context,'Card Type', widget.cardTypeOpcg, "selectedTypeOpcg"),
+                              _buildFilterSection(context,'Illustration Type', widget.illustrationTypeOpcg, "selectedIllustraTypeOpcg"),
+                              _buildFilterSection(context,'Expansions', widget.expansionsOpcg, "selectedExpansionsOpcg"),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -587,12 +651,12 @@ Widget _buildFilterChip(String filterText, List<String> selectedList) {
                           ]
                         : widget.tcg == 'cardsMyl'
                             ? [
-                              _buildFilterSection('Card Type', widget.cardTypeMyl, widget.selectedTypeMyl),
-                              _buildFilterSection('Rarity', widget.raritiesMyl, widget.selectedRaritiesMyl),
-                              _buildFilterSection('Race', widget.raceMyl, widget.selectedRaceMyl),
-                              _buildFilterSection('Expansions', widget.expansionsMyl, widget.selectedExpansionsMyl),
-                              _buildFilterSection('Cost', widget.cost, widget.selectedCost),
-                              _buildFilterSection('Attack', widget.attack, widget.selectedAttack),
+                              _buildFilterSection(context,'Card Type', widget.cardTypeMyl, "selectedTypeMyl"),
+                              _buildFilterSection(context,'Rarity', widget.raritiesMyl, "selectedRaritiesMyl"),
+                              _buildFilterSection(context,'Race', widget.raceMyl, "selectedRaceMyl"),
+                              _buildFilterSection(context,'Expansions', widget.expansionsMyl, "selectedExpansionsMyl"),
+                              _buildFilterSection(context,'Cost', widget.cost, "selectedCost"),
+                              _buildFilterSection(context,'Attack', widget.attack, "selectedAttack"),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
