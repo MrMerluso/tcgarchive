@@ -1203,52 +1203,43 @@ Future<void> _searchCards(String query) async {
           ) 
           :
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  childAspectRatio: 0.6, // Proporción más rectangular
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
+  child: Padding(
+    padding: const EdgeInsets.all(16.0),
+    child: MasonryGridView.builder(
+      gridDelegate: SliverSimpleGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3, // Número de columnas
+      ),
+      mainAxisSpacing: 10,
+      crossAxisSpacing: 10,
+      itemCount: availableCards.length,
+      itemBuilder: (context, index) {
+        var card = availableCards[index];
+        return GestureDetector(
+          onTap: () {
+            _showCardDetail(context, index); // Mostrar carta en grande al hacer clic
+          },
+          child: Column(
+            children: [
+              CachedNetworkImage(
+                imageUrl: card['Imagen'],
+                placeholder: (context, url) => Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(),
+                    SizedBox(height: 10),
+                    Text("Cargando..."),
+                  ],
                 ),
-                //itemCount: filteredCards.length,
-                itemCount: availableCards.length,
-                itemBuilder: (context, index) {
-                  var card = availableCards[index];
-                  //final card = filteredCards[index];
-                  return GestureDetector(
-                    onTap: () {
-                      _showCardDetail(context, index); // Mostrar carta en grande al hacer clic
-                    },
-                    child: Stack(
-                      children: [
-                        Column(
-                          children: [
-                            Expanded(
-                              child: CachedNetworkImage(
-                                imageUrl: card['Imagen'],
-                                placeholder: (context, url) => Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    CircularProgressIndicator(),
-                                    SizedBox(height: 10),
-                                    Text("Cargando..."),
-                                  ],
-                                ),
-                                errorWidget: (context, url, error) => Icon(Icons.error),
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                        ],
-                      ),
-                      ],
-                    ),
-                  );
-                },
+                errorWidget: (context, url, error) => Icon(Icons.error),
+                fit: BoxFit.cover,
               ),
-            ),
+            ],
           ),
+        );
+      },
+    ),
+  ),
+)
         ],
       ),
     );
