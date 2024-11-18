@@ -66,11 +66,13 @@ class FoldersController {
 
     DocumentSnapshot folderSnapshot = await folderRef.get();
 
+    FoldersModel folder = FoldersModel.fromSnapshot(folderSnapshot);
+
     // final creador = folderSnapshot["Creador"];
 
     if (folderSnapshot.exists && folderSnapshot["Creador"] == userRef){
       
-      DocumentReference cardRef = _db.collection("cardsPkmntcg").doc(cardId);
+      DocumentReference cardRef = _db.collection(folder.tcg).doc(cardId);
 
       await folderRef.collection("Cartas").add({
         "Carta": cardRef,

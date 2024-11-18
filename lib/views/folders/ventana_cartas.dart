@@ -214,8 +214,8 @@ class _CardScreenState extends State<CardScreen> {
                   Container(
                     height: 500, // Tamaño de la imagen ampliada
                     color: Colors.grey[300], // Placeholder de la imagen
-                    child: Image.asset(
-                      'images/zagreus.jpg', // Imagen de la carta
+                    child: Image.network(
+                      card['Imagen'], // Imagen de la carta
                       fit: BoxFit.cover,
                     )
                   ),
@@ -454,8 +454,8 @@ class _CardScreenState extends State<CardScreen> {
                         Column(
                           children: [
                             Expanded(
-                              child: Image.asset(
-                                'images/zagreus.jpg', // Imagen de la carta
+                              child: Image.network(
+                                card['Imagen'], // Imagen de la carta
                                 fit: BoxFit.cover,
                               ),
                             ),

@@ -23,9 +23,36 @@ class AddCards extends StatefulWidget {
   final String? folderId;
   final FoldersController _foldersController = FoldersController();
 
+
+  //Select Pkmn
+  final List<String> selectedEnergyTypes = [];
+  final List<String> selectedEvolved = [];
+  final List<String> selectedTypePkmn = [];
+  final List<String> selectedRaritiesPkmn = [];
+  final List<String> selectedExpansionsPkmn = [];
+
+  //Select Opcg
+  final List<String> selectedColors = [];
+  final List<String> selectedTypeOpcg = [];
+  final List<String> selectedIllustraTypeOpcg = [];
+  final List<String> selectedExpansionsOpcg = [];
+
+  //Select Myl
+  final List<String> selectedTypeMyl = [];
+  final List<String> selectedRaritiesMyl = [];
+  final List<String> selectedRaceMyl = [];
+  final List<String> selectedExpansionsMyl = [];
+  final List<String> selectedCost = [];
+  final List<String> selectedAttack = [];
+
    
 
-  AddCards({super.key, required this.folderName, required this.cards, required this.tcg, required this.folderId});
+  AddCards({
+    super.key, 
+    required this.folderName, 
+    required this.cards, 
+    required this.tcg, 
+    required this.folderId,});
 
 
   @override
@@ -208,6 +235,8 @@ class MyDialog extends StatefulWidget {
     '0', '1', '2', '3', '4', '5', '6',
   ];
   final List<String> selectedAttack;
+
+  List<String> Testt = ['Grass', 'Fire', 'Basic'];
 
   MyDialog({super.key, 
     required this.tcg,
@@ -396,9 +425,8 @@ Widget _buildFilterChip(String filterText, List<String> selectedList) {
       widget.selectedCost,
       widget.selectedAttack,
     );
-  }
-  Navigator.pop(context, availableCards);
-
+    }
+    Navigator.pop(context, availableCards);
   }
   
 
@@ -413,9 +441,9 @@ Widget _buildFilterChip(String filterText, List<String> selectedList) {
         ),
       ),
       checkmarkColor: Color(0xFFEBEEF2),
-      selected: isSelected,
+      selected: selectedList.contains(filterText),
       backgroundColor: Colors.grey[200],
-      selectedColor: Color(0xFF6194E2),
+      selectedColor:  Color(0xFF6194E2),
       onSelected: (bool selected) {
         setState(() {
           if (selected) {
@@ -954,6 +982,7 @@ Future<void> _searchCards(String query) async {
   // Función para mostrar la imagen en grande con opciones de editar o eliminar
   void _showCardDetail(BuildContext context, int index) {
     final card = availableCards[index];
+    print("Card: $card");
   final TextEditingController cardPriceController = TextEditingController(
     text: card['price'] != null ? card['price'].toString() : '',
   );
@@ -1048,7 +1077,7 @@ Future<void> _searchCards(String query) async {
                   SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
+                    /*children: [
                       TextButton(
                       child: Text('Agregar a la carpeta'),
                       onPressed: () {
@@ -1077,16 +1106,16 @@ Future<void> _searchCards(String query) async {
                           ),
                         );
 
-                        Navigator.of(context).pop(); // Close the dialog
-                    /*children: [
+                        Navigator.of(context).pop(); // Close the dialog*/
+                    children: [
                       TextButton(
                         child: Text('Agregar a la carpeta'),
                         onPressed: () {
                           setState(() {
                             
-                            widget.cards[index]['price'] = int.tryParse(cardPriceController.text) ?? 0.0;
-                            widget.cards[index]['copies'] = int.tryParse(cardCopiesController.text) ?? 0;
-                            FoldersController().updateCardInFolder(card["id"], widget.folderId!, card["copies"], card["price"]);
+                            card['price'] = int.tryParse(cardPriceController.text) ?? 0;
+                            card['copies'] = int.tryParse(cardCopiesController.text) ?? 0;
+                            FoldersController().addCardToFolder(card["id"], widget.folderId!, card["copies"], card["price"]);
                           });
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
@@ -1097,11 +1126,11 @@ Future<void> _searchCards(String query) async {
                                   right: 16.0,
                                 ),
                                 duration: Duration(milliseconds: 1500),
-                                content: Text('Cambios guardados', style: TextStyle(color: Colors.white)),
+                                content: Text('Se agrego correctamente', style: TextStyle(color: Colors.white)),
                                 backgroundColor: Colors.green,
                               ),
                             );
-                          Navigator.of(context).pop(); // Guardar cambios y cerrar el diálogo*/
+                          Navigator.of(context).pop(); // Guardar cambios y cerrar el diálogo
                         },
                       ),
                     ],
@@ -1174,6 +1203,7 @@ Future<void> _searchCards(String query) async {
             child:
             IconButton(onPressed: (){
               _openFilterDialog();
+              
             }, icon: Icon(Icons.filter_alt), color: Color(0xFF104E75), iconSize: 30),
             
           ),
