@@ -164,9 +164,10 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(20.0),
+
         child: Column(
           children: [
             const SizedBox(height: 150),
